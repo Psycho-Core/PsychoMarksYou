@@ -87,7 +87,7 @@ def check(name, cond, detail=""):
 
 
 print("\n-- published counts (README / docs) --")
-check("Classic table has 565 mob records", cm == 565, cm)
+check("Classic table has 600 mob records", cm == 600, cm)
 check("Classic table spans 28 zones", cz == 28, cz)
 check("no malformed Classic rows", codd == "", codd)
 check("no malformed runtime rows", rodd == "", rodd)
@@ -97,10 +97,10 @@ check("runtime lookup exposes Classic zones",
       L.eval('PsychoMarksYou_DefaultMobs["Scholomance"] ~= nil'))
 check("runtime lookup still exposes Forever zones",
       L.eval('PsychoMarksYou_DefaultMobs["The Hall of Thanes"] ~= nil'))
-check("runtime zone count = Classic 28 + Forever 3",
-      rz == cz + 3, "%d vs %d+3" % (rz, cz))
-check("runtime mob count = Classic 565 + Forever 28",
-      rm == cm + 28, "%d vs %d+28" % (rm, cm))
+check("runtime zone count = Classic 28 + Forever 7",
+      rz == cz + 7, "%d vs %d+7" % (rz, cz))
+check("runtime mob count = Classic 600 + Forever 76",
+      rm == cm + 76, "%d vs %d+76" % (rm, cm))
 
 print("\n-- the six added Classic rows exist --")
 added = [("Razorfen Downs", "Ragglesnout"),
@@ -119,7 +119,9 @@ function ()
   local n, names = 0, {}
   for z in pairs(PsychoMarksYou_DefaultMobs) do
     if z == "The Hall of Thanes" or z == "Ruins of Lordaeron"
-       or z == "Excavation Site: Wetlands" then
+       or z == "Excavation Site: Wetlands" or z == "City of Dalaran"
+       or z == "The Drowned City" or z == "Barrow Deeps"
+       or z == "Hyjal Summit" then
       n = n + 1
       names[#names+1] = z
     end
@@ -128,13 +130,39 @@ function ()
   return n, table.concat(names, ", ")
 end
 ''')()
-check("exactly three Forever dungeon zones carry rows", forever_zones[0] == 3, forever_zones)
-check("no rows for unverified Forever content",
+check("exactly seven Forever zones carry rows", forever_zones[0] == 7, forever_zones)
+check("Forever adds 76 mob records",
+      L.eval(r"""
+      function ()
+        local n = 0
+        for _, z in ipairs({"City of Dalaran", "The Drowned City", "Barrow Deeps",
+                            "Hyjal Summit", "The Hall of Thanes",
+                            "Ruins of Lordaeron", "Excavation Site: Wetlands"}) do
+          for _ in pairs(PsychoMarksYou_DefaultMobs[z]) do n = n + 1 end
+        end
+        return n
+      end
+      """)() == 76)
+# Four dungeons still have no published mob roster at all ("Bosses: Unknown yet /
+# Mob Packs: Unknown yet" in every source), so they get no rows by design.
+check("no rows for the four Forever dungeons with no published roster",
       all(L.eval('PsychoMarksYou_DefaultMobs["%s"] == nil' % z) for z in
-          ["City of Dalaran", "The Drowned City", "Krol'dok Stronghold",
-           "Alcaz Prison", "Blackmaw Hold", "Shaper's Terrace",
-           "Barrow Deeps", "Hyjal Summit"]),
-      "checked 8 omitted zones")
+          ["Krol'dok Stronghold", "Alcaz Prison", "Blackmaw Hold",
+           "Shaper's Terrace"]),
+      "checked 4 no-data zones")
+# The Drowned City and the two raids are demo/roster-only data, so every row in
+# them must carry a note saying so.
+check("demo-sourced Forever rows all carry a provenance note",
+      L.eval(r"""
+      function ()
+        for _, z in ipairs({"The Drowned City", "Barrow Deeps", "Hyjal Summit"}) do
+          for n, e in pairs(PsychoMarksYou_DefaultMobs[z]) do
+            if type(e) ~= "table" or e.note == nil then return false end
+          end
+        end
+        return true
+      end
+      """)())
 
 print("\n-- guide/zone registry still lists all announced content --")
 reg = L.eval(r'''

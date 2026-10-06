@@ -13,7 +13,8 @@ import subprocess
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SUITES = ["test_syntax.py", "test_databases.py", "test_behaviour.py", "test_dbtab.py"]
+SUITES = ["test_syntax.py", "test_databases.py", "test_behaviour.py", "test_dbtab.py",
+          "test_priority_order.py"]
 
 try:
     import lupa  # noqa: F401

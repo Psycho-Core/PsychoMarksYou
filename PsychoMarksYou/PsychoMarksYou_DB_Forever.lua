@@ -5,8 +5,11 @@
 --   * Static mark, danger, creature-type, and CC data is added only where
 --     current playable guides or reliable encounter evidence support it.
 --   * Context-dependent tactics may be note-only (no automatic priority).
---   * Unplayable, demo-only, disputed, and unsupported mob rosters are omitted.
+--   * Unplayable, demo-only and client-roster-only names are included only with
+--     an explicit note saying so, and never with invented mechanics.
 --   * Never infer detailed priorities from a dungeon's theme or roster alone.
+--   * Dungeons with no published mob roster get no rows at all; see the
+--     no-data block near the end of the table.
 -- ============================================================================
 
 local foreverMobs = {
@@ -22,7 +25,8 @@ local foreverMobs = {
             note = "Fast poison-dagger damage can overwhelm the tank; clear before Durgen and focus in the final mixed pack if the Summoner is controlled.",
         },
         ["Dark Iron Engineer"] = {
-            note = "Bombs target a ground location and can be avoided by moving; spread rather than treating the Engineer as a universal first kill.",
+            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
+            note = "AoE dynamite that targets a ground location, so it can be dodged by moving. A Polymorph or Sap target rather than a universal first kill; spread out instead of stacking on it."
         },
         ["Fiery Assistant"] = {
             mark = 7, creatureType = "Elemental", dangerLevel = 2,
@@ -30,23 +34,23 @@ local foreverMobs = {
         },
         ["Lesser Stone Golem"] = {
             mark = 7, creatureType = "Elemental", dangerLevel = 2,
-            note = "Hard-hitting final-room add; Method recommends killing it after Durgen Dirgehammer, while keeping the other adds controlled.",
+            note = "Two of them guard Durgen Dirgehammer. Guides disagree: one says burn the Golems quickly then take the boss, the Method walkthrough says kill Durgen first. Pick one and stick to it; both agree the Golems must stay controlled."
         },
         ["Faldrim Anvilmar"] = {
-            mark = 8, dangerLevel = 2,
-            note = "Current beta encounter; generic boss focus only, with no unsupported add order encoded.",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Curse that petrifies and cuts attack speed by 20%, plus Mind Blast style Shadow damage. Clear the spirits around him first and keep a curse cleanse ready."
         },
         ["Magmatus"] = {
-            mark = 7, dangerLevel = 2,
-            note = "Live guides call the boss Magmatus; kill the accompanying Dark Iron Summoner first and tank Magmatus away from the group for Fire Nova.",
+            mark = 7, creatureType = "Elemental", dangerLevel = 3,
+            note = "Fire damage and Combust. Dark Iron Summoners and Engineers are up with him, so kill or control them before committing."
         },
         ["Plunder"] = {
-            mark = 8, dangerLevel = 2,
-            note = "Current beta boss name; generic boss focus only, with no unsupported mechanics encoded.",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Charge plus an AoE knock-up. Keep the group spread and away from ledges so the knock-up does not throw anyone into the next pack."
         },
         ["Durgen Dirgehammer"] = {
-            mark = 8, dangerLevel = 3,
-            note = "Clear nearby Looters and patrols before pulling. The boss fears and hits the tank hard; the current Method guide recommends killing Durgen first, then the Lesser Stone Golems.",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "AoE Fear plus a bleed, and hits the tank hard. Clear nearby Looters and patrols before pulling, keep Fear Ward or Tremor available, and see the Lesser Stone Golem note for the disputed add order."
         },
     },
 
@@ -118,9 +122,162 @@ local foreverMobs = {
         },
     },
 
-    -- Other announced dungeons and future raids are listed in the guide/zone
-    -- registry below, but have no mob priority entries until dependable tactics
-    -- are available. Demo-only and client-roster-only names are not in this DB.
+    -- Krol'dok Stronghold (40-45), Alcaz Prison (48-53), Blackmaw Hold (55-60)
+    -- and Shaper's Terrace (58-60) have NO mob data to work from. Every source
+    -- checked lists them as "Bosses: Unknown yet / Mob Packs: Unknown yet", and
+    -- none is playable in the beta. Their zone aliases are registered below so
+    -- the addon still resolves the zone name, and the runtime heuristics
+    -- (caster / mana / boss detection) plus auto-learn cover them in the
+    -- meantime. Inventing mob names from the dungeon theme is exactly what the
+    -- data policy at the top of this file forbids, so no rows are added.
+    -- City of Dalaran (28-33, Alterac Mountains). NOT playable in the beta as
+    -- of the October 2026 builds; the boss roster is the beta client's own list
+    -- and the mechanics are the ones Wowhead documents for the encounters.
+    -- Almost all trash here is immune to Arcane damage, so marks matter more
+    -- than the usual caster-first assumption.
+    ["City of Dalaran"] = {
+        ["Kirin Tor Necromancer"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Summoner. Runs the Underbelly ritual and skeletons keep rising through it; kill it first or the pack never shrinks.",
+        },
+        ["Mana Phantom"] = {
+            mark = 8, creatureType = "Elemental", dangerLevel = 3,
+            note = "Casts Mana Burn; interrupt it. Two of them spawn with Arcanic Enigma.",
+        },
+        ["Angry Tome"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Spawns out of the buildings during Unstable Sentinel. Kill the Tomes before you engage the boss, not during it.",
+        },
+        ["Arcanic Enigma"] = {
+            mark = 8, creatureType = "Elemental", dangerLevel = 3,
+            note = "Brings two Mana Phantoms and a Silence the healer must stay clear of; dispel Manamorph. Wowhead lists it as an encounter, the beta client's boss list does not.",
+        },
+        ["Atrexis the Grave Knight"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Disarms the tank and summons skeletons. Establish threat before anyone AoEs. Sits at the Underbelly ritual circle with Necromancers around him.",
+        },
+        ["Shade of the Archmage"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Mass Polymorph, Evocation, Arcane Explosion and Bounding Mana. Assign strict interrupts and keep a Polymorph break ready.",
+        },
+        ["Arcane Anomaly"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Arcane Bolt plus Focal Blast, a rotating beam that kills. Stay on the platform and move with the beam.",
+        },
+        ["Unstable Sentinel"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Malfunction blasts everyone within 25 yards after a wind-up. Melee run out on the wind-up, ranged stay at maximum range.",
+        },
+        ["Mana Devourer"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Mana drain; kill it while the healers still have a pool to work from.",
+        },
+        ["Mana Wraith"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Listed as the final encounter in the beta client; a level 27 Mana Wraith has also been pulled as ordinary street trash, so confirm which one you are marking.",
+        },
+        ["Mana Elemental"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Arcane-immune elemental; physical and non-Arcane damage only.",
+        },
+        ["Fel Ancient"] = {
+            mark = 7, creatureType = "Demon", dangerLevel = 2,
+            note = "Locked behind a mana barrier until the nearby bosses are down; Warlock Banish applies if the group needs to park it.",
+        },
+        ["Lyn the Ignored"] = {
+            mark = 7, creatureType = "Humanoid", dangerLevel = 2,
+            note = "Rare elite. No mechanics published yet.",
+        },
+        ["Saturated Remnant"] = "SKIP",
+    },
+
+    -- The Drowned City (35-40, off the Stranglethorn coast). Not in the beta;
+    -- this comes from the playable BlizzCon 2026 show-floor build, so treat it
+    -- as a build snapshot rather than final data. The boss roster itself is
+    -- still disputed between sources.
+    ["The Drowned City"] = {
+        ["Deathless Sorcerer"] = {
+            mark = 8, creatureType = "Undead", dangerLevel = 3,
+            note = "Caster trash in the deeper sections; interrupt or CC it before anything else in the pack.",
+        },
+        ["Deathless Guardian"] = {
+            mark = 8, creatureType = "Undead", dangerLevel = 2,
+            note = "Undead group deeper in the city. The reason not to combine packs here.",
+        },
+        ["Risen Sentry"] = {
+            mark = 7, creatureType = "Undead", dangerLevel = 2,
+            note = "Undead patrol. Watch its route before committing to a pull; Shackle Undead applies.",
+        },
+        ["Brinescale Explorer"] = {
+            mark = 7, creatureType = "Humanoid", dangerLevel = 2,
+            note = "Naga in the mixed aquatic packs; kill the spellcasters first.",
+        },
+        ["Makrura"] = {
+            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
+            note = "Early-area aquatic packs around the water-heavy rooms; druid Hibernate applies.",
+        },
+        ["Zul'Alai"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "First boss. Very strong enrage near death plus hard AoE hits; save tank defensives and DPS cooldowns for the last phase.",
+        },
+        ["Zin'aka"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Reachable through the water. Reported to put extreme pressure on the tank; enter with defensives ready. Not on every published roster.",
+        },
+        ["Deathless Marrow"] = {
+            mark = 8, creatureType = "Undead", dangerLevel = 3,
+            note = "Reported to put severe pressure on the tank. Clear nearby enemies first and arrive with healer mana.",
+        },
+        ["Min'loth the Serpent"] = {
+            mark = 8, creatureType = "Beast", dangerLevel = 2,
+            note = "Deeper encounter. No ability list, phases or named spells published; treat any detailed strategy as unconfirmed.",
+        },
+        ["Var'Taka"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 2,
+            note = "On one published roster but not the other; no mechanics documented either way.",
+        },
+        ["Captain Dreadrise"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 2,
+            note = "Pirate encounter on one published roster; a ship has crashed into the city. No mechanics documented.",
+        },
+        ["Gill"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 2,
+            note = "On one published roster but not the other; no mechanics documented.",
+        },
+    },
+
+    -- New raids. Both open December 9 2026 and neither is playable in the beta.
+    -- Names are the beta client's Legacy achievement criteria (Hyjal Summit) and
+    -- the BlizzCon demo roster (Barrow Deeps); no mechanics have been tested, so
+    -- these rows only carry the boss mark.
+    ["Barrow Deeps"] = {
+        ["Deepscar Matriarch"]     = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Elder Tangleclaw"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Khalith the Dreadspinner"] = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Well of Sorrow"]         = { mark = 8, dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Amethrax"]               = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Del'lynar Songwood"]     = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Ravus"]                  = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; paired with Darlissa. Mechanics untested." },
+        ["Darlissa"]               = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; paired with Ravus. Mechanics untested." },
+        ["Sonya Darkhallow"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+    },
+
+    ["Hyjal Summit"] = {
+        ["Bandalar"]               = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order, which is not a confirmed kill order; mechanics untested." },
+        ["Ancient of Decay"]       = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Time-Lost Battalion"]    = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Sylvestris Dusksong"]    = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Old Gloomlurker"]        = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Gharalis the Abyssal"]   = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Kathris the Haunted"]    = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Anara Chillwind"]        = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Elder Minderel"]         = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Tracker Stillwind"]      = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Council of Thorns"]      = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Nythus the Dreambound"]  = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; one source spells this Dreadmbound. Mechanics untested." },
+        ["The Wild King"]          = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+    },
+
 }
 
 -- Merge without replacing any pre-existing zone or mob entry.

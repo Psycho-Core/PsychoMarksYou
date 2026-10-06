@@ -8,12 +8,13 @@ This is a targeted review of the most consequential tactics in selected instance
 
 - Static marks, danger values, creature types, and CC-immunity flags are included only where sources support the claim and its use in a repeatable plan.
 - When a tactic is supported but depends on the pack, wave, group composition, or raid assignment, the database may retain a **note-only** row. It has no default mark, danger, creature type, or CC-immunity value, so it does not contribute a fixed priority to automatic scoring.
-- Unsupported, disputed, roster-only, or demo-only mob rows are omitted rather than kept behind a confidence/status label or runtime gate. Unavailable content does not receive inferred priorities based on its theme.
+- Unsupported and disputed mob rows are omitted. Unavailable content never receives inferred priorities based on its theme.
+- **Provenance-noted rows** (added 6 Oct 2026): demo-sourced and client-roster-sourced content may now be encoded, but every such row must carry a `note` saying where it came from and that it is untested. This is a deliberate reversal of the earlier "omit demo-only rosters" rule — see *Reversal: demo and roster-only Forever content* below. `tests/test_databases.py` enforces the note requirement.
 - General runtime heuristics (for example, recognition of a boss or caster) still apply to observed units independently of these database entries.
 
 ## Classic dungeons and raids
 
-The Classic table previously existed only as `AutoMarkAssist_MobDB` (559 entries across 28 zones), while runtime lookup read `PsychoMarksYou_DefaultMobs`. The Classic module now merges the table into runtime lookup without replacing a pre-existing row; the legacy global remains available. Six source-supported mob rows were added, bringing the table to 565 records. The review is selective; unmentioned legacy rows have not all been re-verified against every Forever build.
+The Classic table previously existed only as `AutoMarkAssist_MobDB` (559 entries across 28 zones), while runtime lookup read `PsychoMarksYou_DefaultMobs`. The Classic module now merges the table into runtime lookup without replacing a pre-existing row; the legacy global remains available. Six source-supported mob rows were added in the first pass, and 35 more in the 6 October pass, bringing the table to 600 records. The review is selective; unmentioned legacy rows have not all been re-verified against every Forever build.
 
 | Instance | Researched tactic | Database implementation |
 | --- | --- | --- |
@@ -43,14 +44,37 @@ The Classic table previously existed only as `AutoMarkAssist_MobDB` (559 entries
 - **Ruins of Lordaeron:** Current guides support handling Flesh Golems and Living Monstrosities separately, killing Ragged Ghouls before ordinary Ghouls in mixed packs, and pulling back to avoid adjacent packs/patrols. Boss notes cover Witherfang's Leech Poison, The Baron's hard hits and heavy Knockout that knocks back and stuns the tank (keep the tank near full health; use stuns), The Abandoned's interruptible Life Drain, Bjork's patrol and nearby-Ghoul pull risk, and Rath'mael's Flamestrike. Some guides also describe threat loss on Knockout; the database note stays with the shared damage/knockback/stun advice. Shrieking Banshee and the Skeletal Soldier/Mage entries are note-only where the guide does not establish a special kill order.
 - **Excavation Site: Wetlands:** Thicket Hunters apply Infected Wound; current guides advise CCing both, or controlling one and killing the other, with prompt dispels. Thicket Matriarchs call Lurkers when low, so clear other pack mobs before bursting them. Walking through tall grass can spawn Lurkers; stay on paths and fight on cleared ground. Those contextual add mechanics are notes, not fixed priorities. Saltspine, Shadetooth, and Relic Guardian have active boss priorities and sourced mechanic notes.
 
-### Researched but not encoded as mob-priority rows
+### Now encoded, with provenance notes
 
-The latest reviewed public-beta roster is Blizzard's October 1 update (level cap 30). It added Excavation Site: Wetlands and listed Hall of Thanes and Ruins of Lordaeron among the available dungeons, but not City of Dalaran. Blizzard's October 1 clarification said Dalaran would come in a future beta update; the October 5 guide check still reports it unavailable.
+These four were previously omitted. They are now in the database because each has a
+named mob or encounter roster from a specific source, and every row says so.
 
-- **City of Dalaran:** There is more than a client roster: Xaryu's September 13 pre-beta run shows a full early build, and Wowhead's October 1 guide reports specific trash advice (focus non-elite Mana Phantoms and interrupt Mana Burn; kill Angry Tomes before Unstable Sentinel; use Saturated Remnants' mana fields). However, Wowhead explicitly warns that unavailable-dungeon data may come from Classic or its database and may be incomplete or inaccurate. The published boss lists also disagree: Wowhead's guide includes Arcanic Enigma, while the client-derived encounter list instead includes Mana Devourer, Mana Elemental, and Mana Wraith. Since those mob tactics and names have not been checked in the current public beta, none of the preview/database-only mobs are added as default rows or priorities.
-- **The Drowned City:** Warcraft Tavern's detailed account is from a BlizzCon show-floor demo, not the current beta. It describes Makrura, Risen Sentries, naga, tight packs/patrols, and boss risks such as Zul'Alai's low-health enrage and tank pressure at Zin'aka/Deathless Marrow. The available coverage does not establish a repeatable trash kill order for the current build; no mob rows or marks are included.
-- **Krol'dok Stronghold, Alcaz Prison, Blackmaw Hold, and Shaper's Terrace:** Public material establishes announced level bands, settings, and broad premises, not dependable mob names or tactics. No mob priorities have been inferred from a dungeon's theme or client rosters.
-- **Barrow Deeps and Hyjal Summit:** The roadmap and client Legacy challenges establish future raid names/encounter rosters, but there are no playable encounter tactics yet. No raid mob rows, CC claims, or kill orders are included.
+- **City of Dalaran (14 rows):** the beta client's own encounter list plus the
+  documented trash behaviour — almost all trash is Arcane-immune, interrupt Mana
+  Burn, kill the Angry Tomes before Unstable Sentinel, Kirin Tor Necromancers keep
+  raising skeletons through the Underbelly ritual, Arcanic Enigma silences and
+  brings two Mana Phantoms. Still **not playable in the beta**, so the rows carry
+  that caveat. The roster disagreement is kept visible: Arcanic Enigma's note says
+  Wowhead lists it and the client list does not.
+- **The Drowned City (12 rows):** from the playable BlizzCon 2026 show-floor build.
+  Deathless Sorcerer is the caster to interrupt; Deathless Guardian and Risen Sentry
+  are why you do not combine packs. The boss roster is disputed — Zul'Alai, Zin'aka,
+  Deathless Marrow and Min'loth appear in one source; Var'Taka, Captain Dreadrise and
+  Gill appear in another. All seven are included, each noting which side it is on.
+- **Barrow Deeps (9 rows) and Hyjal Summit (13 rows):** boss names only, from the
+  BlizzCon demo roster and the beta client's Legacy achievement. No mechanics have
+  been tested, so these rows carry the Skull mark a raid boss should get and nothing
+  more. Every note says "mechanics untested".
+
+### Still deliberately not encoded
+
+- **Krol'dok Stronghold (40-45), Alcaz Prison (48-53), Blackmaw Hold (55-60),
+  Shaper's Terrace (58-60):** every source checked lists these as
+  *"Bosses: Unknown yet / Mob Packs: Unknown yet"* and none is playable. There are
+  themes only — ogres with Twilight's Hammer influence, Defias versus naga, a
+  corrupted furbolg city, a Titan facility with dinosaurs. Encoding mob names from a
+  theme is exactly what the policy forbids, so these four zones have aliases but no
+  rows. The runtime heuristics and auto-learn cover them in the meantime.
 
 ### Conflicting or incomplete names deliberately omitted
 
@@ -72,3 +96,93 @@ The latest reviewed public-beta roster is Blizzard's October 1 update (level cap
 - [EndgameTools — client-derived Forever dungeons/raids overview](https://endgametools.com/en/wow-forever/news/wow-forever-new-dungeons-raids) and its [City of Dalaran roster](https://endgametools.com/en/wow-forever/dungeons/city-of-dalaran)
 
 Public guides, beta builds, and client-derived lists can disagree or lag as the beta changes. Re-check those sources before adding a mob row or automatic target priority.
+
+## Danger rubric and what the addon does with it
+
+Added 6 October 2026. Before this pass most rows carried a `mark` but no
+`dangerLevel`, so `PMY.GetEffectiveDanger` fell back to 2 for everything in the
+Skull/Cross band. Every healer, summoner and foot soldier scored identically and the
+addon could not tell them apart. `dangerLevel` is what separates them:
+
+| Level | Meaning | Score contribution |
+| --- | --- | --- |
+| 3 — Critical | Healers, summoners, fear / mind-control / silence, wipe risks | `1000 + 300` |
+| 2 — High | Dangerous casters, AoE, cleave, enrage, knockback, heavy hitters | `1000 + 200` |
+| 1 — Normal | Melee and pack filler | `500/1000 + 100` |
+
+`PMY.ScoreMob` only separates the Skull/Cross band (`mark` 8/7) from the CC band
+(`mark` 1-6), then adds `danger * 100`. So within one band, **`dangerLevel` is the
+only thing that orders a pack.**
+
+### Engine change: deterministic tie-breaking
+
+With 141 danger-3 rows, ties inside a band became the normal case, and
+`ScanAndMarkPack` sorted with a bare `a.score > b.score`. Lua's `table.sort` is not
+stable, so the "first target" the addon announced was arbitrary run to run.
+`PMY.SortByPriority` now breaks ties by database mark preference (Skull over Cross
+over a CC mark) and then by name. It is a named function rather than an inline
+closure so `tests/test_priority_order.py` can sort with the shipped comparator
+instead of re-implementing the rule.
+
+Note what this does *not* do: two mobs that share a mark **and** a danger level still
+tie, and fall back to alphabetical order. Within the danger-3 band the data cannot
+express "healer before summoner" — that would need a finer scale than 1-3 or a mark
+preference difference.
+
+### Classic pass: what changed, and how confident it is
+
+Verified counts after the pass, from a real Lua VM:
+
+| Table | Zones | Rows | d3 | d2 | d1 | note-only | SKIP |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `AutoMarkAssist_MobDB` | 28 | 600 | 141 | 249 | 126 | 22 | 61 |
+| `PsychoMarksYou_DefaultMobs` | 35 | 676 | 158 | 301 | 126 | 28 | 62 |
+
+**Guide-sourced (a named source states the ability or the kill order):**
+Stratholme (Crimson Priest heals, Conjurer summons elementals, Sorcerer polymorphs,
+Battle Mage AoE, banshee silence), Scarlet Monastery (Chaplain/Abbot/Friar heal,
+Diviner Fireball, Conjuror fire pet, Wizard instant AoE, Myrmidon enrage),
+Blackfathom Deeps (Blindlight Oracle heals/shields/Fears, Shadowmage Dominate Mind
+plus Voidwalker, Acolyte heals, Aquamancer calls an Aqua Guardian),
+Gnomeregan (Irradiated Horror Chain Burn, Machinesmith/Technician Supercharge and
+Tune Up, alarm bots, mechanical CC immunity), Uldaman (Darkcaster volley and Mana
+Burn, Relic Hunter Silence and Heal, Geologist Flame Spike and Shield Bash),
+Lower Blackrock Spire (Scarshield Warlock portal, Evoker knockback/stun, Spire Spider
+stun and spiderlings, Blackrock Summoner player-summon), Zul'Gurub
+(Priest > Witch Doctor > Headhunter > Axe Thrower, Blood Drinker self-heal),
+Dire Maul (Wildspawn Hellcaller/Felsworn/Trickster/Betrayer casts, Warpwood Guardian
+Regrowth, Stomper War Stomp, Magister Kalendris mind control), Maraudon (satyr Gouge,
+Shadowstalker stealth, Shambler Wild Regeneration, Noxious Cloud slimes),
+Wailing Caverns (Druid of the Fang Healing Touch and Druid's Slumber),
+The Deadmines (Taskmaster Piercing Shot, elite Overseers, fleeing Defias),
+Zul'Farrak (Witch Doctor totems, Shadowcaster volley, Zealot CC, Blood Drinker),
+Temple of Ahn'Qiraj (Anubisath Sentinel ability transfer, Qiraji Slayer silence and
+on-death attack-power buff, Qiraji Lasher whirlwind), AQ20 (Qiraji Gladiator speed and
+damage, Anubisath Guardian random abilities).
+
+**Established Classic knowledge, not re-verified against a single guide this pass:**
+the danger levels on filler mobs across every zone (`dangerLevel = 1`), the CC-mark
+assignments on low-priority humanoids/beasts, and the raid add rankings in Blackwing
+Lair, Molten Core and the Naxxramas Gothik/Kel'Thuzad adds. These are the rows most
+worth re-checking against a current guide.
+
+**Deliberately left note-only (22 rows):** pack-, wave- or raid-assignment-dependent
+tactics where a fixed mark would be wrong — the Molten Core giants and Flamewaker
+pack, Blackwing Lair Overseer/Wyrmguard, the AQ40 Sentinel/Defender/Eradicator/Slayer/
+Stinger ability handling, and all eight Naxxramas Gothik and Kel'Thuzad adds. These
+keep `note` only, so they encode no static priority.
+
+### Sources added this pass
+
+- [MmonsteR — Blackfathom Deeps](https://mmonster.co/wow-forever/guides/dungeons/blackfathom-deeps), [Gnomeregan](https://mmonster.co/wow-forever/guides/dungeons/gnomeregan), [Uldaman](https://mmonster.co/wow-forever/guides/dungeons/uldaman), [The Deadmines](https://mmonster.co/wow-forever/guides/dungeons/the-deadmines), [Maraudon](https://mmonster.co/wow-forever/guides/dungeons/maraudon), [Dire Maul: East](https://mmonster.co/wow-forever/guides/dungeons/dire-maul-east)
+- [Wow pro — Jame's Stratholme guide](https://www.wow-pro.com/42-56-james-stratholme-guide/) and [Jame's Scarlet Monastery guide](https://www.wow-pro.com/33-40-james-scarlet-monastery-guide/)
+- [Vanilla WoW Archive — Scarlet Monastery](https://vanilla-wow-archive.fandom.com/wiki/Scarlet_Monastery) and [Instance grouping guide](https://vanilla-wow-archive.fandom.com/wiki/Instance_grouping_guide)
+- [OwnedCore — Lower Blackrock Spire guide](https://www.ownedcore.com/forums/world-of-warcraft/world-of-warcraft-guides/510-guide-lower-black-rock-spire.html), [Warcraft Wiki — LBRS walkthrough](https://warcraft.wiki.gg/wiki/Lower_Blackrock_Spire_walkthrough), [Hardchores — LBRS](https://hardchores.fandom.com/wiki/Lower_Blackrock_Spire)
+- [Reddit r/classicwow — Zul'Gurub trash kill order](https://www.reddit.com/r/classicwow/comments/jfdoee/trash_kill_order_in_zulgurub/)
+- [Icy Veins — AQ40 trash guide](https://www.icy-veins.com/wow-classic/temple-of-ahn-qiraj-aq40-trash-guide), [Icy Veins — Wailing Caverns](https://www.icy-veins.com/wow-classic/wailing-caverns-dungeon-guide)
+- [Wowhead — mind-controllable mob abilities](https://wowpedia.fandom.com/wiki/List_of_mind_controllable_mobs)
+- [Wowforeverguides — City of Dalaran](https://wowforeverguides.com/dungeons/city-of-dalaran), [ForeverChanges — Dalaran demo encounters](https://foreverchanges.pro/dungeons/city-of-dalaran), [MmonsteR — City of Dalaran](https://mmonster.co/wow-forever/guides/dungeons/city-of-dalaran)
+- [ExpCarry — The Drowned City](https://expcarry.com/wow-forever-the-drowned-city-guide), [Mobalytics — The Drowned City](https://mobalytics.gg/wow-forever/dungeons/the-drowned-city-guide)
+- [Warcraft Tavern — Forever dungeons](https://www.warcrafttavern.com/forever/guides/dungeons/) (the "Unknown yet" status of Krol'dok, Alcaz, Blackmaw and Shaper's Terrace)
+- [Wowforeverbuilds — Hyjal Summit](https://wowforeverbuilds.com/raids/hyjal-summit), [WowClassicForever — Forever raids](https://wowclassicforever.info/raids/), [WoFwForever — dungeons and raids](https://wofwforever.com/en/guides/wow-forever-dungeons-raids/)
+- [ExpCarry — Hall of Thanes](https://expcarry.com/wow-forever-hall-of-thanes-guide), used to add the boss mechanics (Faldrim's petrify curse, Magmatus' Combust, Plunder's knock-up, Durgen's AoE Fear) and to record that guides disagree on whether the Lesser Stone Golems die before or after Durgen
