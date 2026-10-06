@@ -1,779 +1,304 @@
 -- ============================================================================
--- Psycho Mark's You - Mob Priority Database (World of Warcraft: Forever Beta)
--- Covers all 9 new WoW: Forever 5-player dungeons and 2 new raids introduced
--- in Patch 1.60.1 (Interface 16001).
+-- Psycho Mark's You - WoW Forever Beta Priority Database
 --
--- Format per entry:
---   ["Mob Name"] = {
---       mark         = 1-8,        -- Preferred raid target icon
---       creatureType = "Humanoid", -- Creature type for CC compatibility
---       dangerLevel  = 1-3,        -- 3 = Critical (healer/summoner/fear/silence)
---                                  -- 2 = High (caster/AoE/cleave/interrupt)
---                                  -- 1 = Normal (melee/pack filler)
---       ccImmune     = true/nil,   -- True if immune to standard CC
---       note         = "...",      -- Tactical tooltip & DB guide note
---   }
---   or "SKIP" for trivial non-elite swarm adds that should not consume marks.
---
--- Raid Icon Reference:
---   8 = Skull (First Kill)         4 = Triangle (Banish - Warlock)
---   7 = Cross (Second Kill)        3 = Diamond  (Sap - Rogue)
---   6 = Square (Trap - Hunter)     2 = Circle   (Hibernate - Druid)
---   5 = Moon (Poly - Mage/Paladin) 1 = Star     (Shackle - Priest)
+-- Data policy:
+--   * Static mark, danger, creature-type, and CC data is added only where
+--     current playable guides or reliable encounter evidence support it.
+--   * Context-dependent tactics may be note-only (no automatic priority).
+--   * Unplayable, demo-only and client-roster-only names are included only with
+--     an explicit note saying so, and never with invented mechanics.
+--   * Never infer detailed priorities from a dungeon's theme or roster alone.
+--   * Dungeons with no published mob roster get no rows at all; see the
+--     no-data block near the end of the table.
 -- ============================================================================
 
 local foreverMobs = {
-
-    -- ========================================================================
-    -- 1. THE HALL OF THANES (Levels 13-18, Beneath Ironforge)
-    -- Playable in Beta Phase 1 & 2. Dark Iron incursion into royal crypts.
-    -- ========================================================================
+    -- Hall of Thanes is live in the beta; these priorities are supported by
+    -- current dungeon guides and are active.
     ["The Hall of Thanes"] = {
-        -- Critical Priority Trash (Danger 3)
         ["Dark Iron Summoner"] = {
             mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Casts Fireball & Summon Fiery Assistant; interrupt & kill first (focus before Magmatus)",
+            note = "Powerful Fireballs and Fiery Assistant summons; interrupt/stun and focus. Kill before Magmatus. In the final mixed pack, CC it while dealing with the Looter/Golem if possible.",
         },
-        ["Dark Iron Shadowcaster"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Casts Terrify (AoE Fear into other packs) & Shadow Bolt; interrupt & kill first",
+        ["Dark Iron Looter"] = {
+            mark = 7, creatureType = "Humanoid", dangerLevel = 2,
+            note = "Fast poison-dagger damage can overwhelm the tank; clear before Durgen and focus in the final mixed pack if the Summoner is controlled.",
         },
-
-        -- High Priority Trash & Constructs (Danger 2)
         ["Dark Iron Engineer"] = {
             mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Throws AoE bombs/dynamite; Polymorph/Sap on pull or kill second",
-        },
-        ["Lesser Stone Golem"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Fast hard-hitting golem; on Durgen Dirgehammer pull, burn both golems down first",
-        },
-        ["Stone Golem"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Hard-hitting construct in final vault; immune to humanoid CC",
-        },
-        ["Raging Magma Elemental"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2,
-            note = "Stacks Flame Buffet fire vulnerability; Banish or focus down quickly",
-        },
-        ["Enraged Apparition"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2,
-            note = "Haunted crypt caster spirit; focus before Tormented Souls",
-        },
-        ["Dark Iron Enforcer"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Uses Concussion Blow (5s stun on tank); Polymorph/Sap or kill second",
+            note = "AoE dynamite that targets a ground location, so it can be dodged by moving. A Polymorph or Sap target rather than a universal first kill; spread out instead of stacking on it."
         },
         ["Fiery Assistant"] = {
             mark = 7, creatureType = "Elemental", dangerLevel = 2,
-            note = "Summoned Fire Elemental add from Dark Iron Summoner; cleave/focus after Summoner",
+            note = "Summoned by Dark Iron Summoners; control/finish after the summoner or handle with the pack's assigned cleave.",
         },
-        ["Animated Anvil"] = {
-            mark = 8, creatureType = "Mechanical", dangerLevel = 2, ccImmune = true,
-            note = "Animated forge construct add; burn down immediately",
+        ["Lesser Stone Golem"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Two of them guard Durgen Dirgehammer. Guides disagree: one says burn the Golems quickly then take the boss, the Method walkthrough says kill Durgen first. Pick one and stick to it; both agree the Golems must stay controlled."
         },
-
-        -- Standard Pack Trash (Danger 1)
-        ["Dark Iron Looter"] = {
-            mark = 3, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Melee rogue with poisoned daggers; Sap/Polymorph or tank & cleave",
-        },
-        ["Dark Iron Invader"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Standard Dark Iron melee/ranged invader; good CC target",
-        },
-        ["Dark Iron Prospector"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Entrance vestibule dwarf; Sap or Polymorph",
-        },
-        ["Dark IronGuard"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Dark Iron guard; CC or cleave",
-        },
-        ["Dark Iron Guard"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Dark Iron guard; CC or cleave",
-        },
-        ["Tormented Soul"] = {
-            mark = 1, creatureType = "Undead", dangerLevel = 1,
-            note = "Restless burial spirit; Shackle Undead or cleave after Enraged Apparition",
-        },
-
-        -- Swarm / Non-Elite Adds (Skip marking)
-        ["Bloodhound Runt"] = "SKIP",
-
-        -- Bosses (for boss-pack marking priority)
         ["Faldrim Anvilmar"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2, ccImmune = true,
-            note = "Boss 1: Casts Mind Blast & Anvilmar's Curse; clear nearby Enraged Apparitions first",
-        },
-        ["Theron the Unbroken"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2, ccImmune = true,
-            note = "Boss 1 (early build): Interrupt/step out of Ground Slam",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Curse that petrifies and cuts attack speed by 20%, plus Mind Blast style Shadow damage. Clear the spirits around him first and keep a curse cleanse ready."
         },
         ["Magmatus"] = {
-            mark = 7, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Boss 2: Kill his Dark Iron Summoner (Skull) FIRST, tank Magmatus away from party (Fire Nova)",
-        },
-        ["Infurnus"] = {
-            mark = 7, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Boss 2 (client name): Kill Dark Iron Summoner first, watch Fire Nova & Combustion",
+            mark = 7, creatureType = "Elemental", dangerLevel = 3,
+            note = "Fire damage and Combust. Dark Iron Summoners and Engineers are up with him, so kill or control them before committing."
         },
         ["Plunder"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Boss 3: Patrols before final room; pull back to previous room to avoid Knockback into packs",
-        },
-        ["Master Smith Bronzebeard"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2, ccImmune = true,
-            note = "Boss 3 (early build): Disarm/kite during Molten Weapon; kill Animated Anvil adds",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Charge plus an AoE knock-up. Keep the group spread and away from ledges so the knock-up does not throw anyone into the next pack."
         },
         ["Durgen Dirgehammer"] = {
-            mark = 7, creatureType = "Humanoid", dangerLevel = 2, ccImmune = true,
-            note = "Final Boss: Clear room edges first (AoE Fear); burn his 2 Lesser Stone Golems (Skull) before Durgen",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "AoE Fear plus a bleed, and hits the tank hard. Clear nearby Looters and patrols before pulling, keep Fear Ward or Tremor available, and see the Lesser Stone Golem note for the disputed add order."
         },
     },
 
-    -- ========================================================================
-    -- 2. RUINS OF LORDAERON (Levels 15-20, Tirisfal Glades / Capital City)
-    -- Playable in Beta Phase 1 & 2. Undead Scourge, Abominations & Spiders.
-    -- ========================================================================
+    -- Ruins of Lordaeron is live in the beta. Only current guide names with
+    -- source-supported tactics are included; disputed roster variants are omitted.
     ["Ruins of Lordaeron"] = {
-        -- Critical Priority Trash (Danger 3)
-        ["Shrieking Banshee"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3,
-            note = "Patrols King's Alley; casts AoE Silence on casters — interrupt & kill first",
-        },
         ["Flesh Golem"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Heavy melee + Knock Away (threat drop & knockback); pull back & burn first",
+            mark = 8, creatureType = "Undead", dangerLevel = 2,
+            note = "Hard-hitting patrol with a knockback; pull away from nearby packs and focus separately.",
         },
         ["Living Monstrosity"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Hard-hitting abomination; focus down immediately to save tank",
-        },
-
-        -- High Priority Trash (Danger 2)
-        ["Wailing Banshee"] = {
             mark = 8, creatureType = "Undead", dangerLevel = 2,
-            note = "Casts anti-hit curse lowering party hit chance; interrupt & focus",
-        },
-        ["Skeletal Mage"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2,
-            note = "Casts Frostbolt & Frost Armor in dense packs; LoS pull & kill before melee skeletons",
+            note = "Hard-hitting; take it down promptly and avoid combining it with other trash.",
         },
         ["Ragged Ghoul"] = {
             mark = 8, creatureType = "Undead", dangerLevel = 2,
-            note = "Hits much harder than standard Ghouls in 3-4 mob packs; always kill before regular Ghouls",
-        },
-        ["Plague Ghoul"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2,
-            note = "Inflicts contagious plague/disease debuffs in Market Street packs; kill first",
-        },
-        ["Stone Watcher"] = {
-            mark = 7, creatureType = "Undead", dangerLevel = 2,
-            note = "Gargoyle on upper floor; casts Stone Slumber (physical immunity + heal, use spells to finish)",
-        },
-        ["Fallen Berserker"] = {
-            mark = 7, creatureType = "Undead", dangerLevel = 2,
-            note = "High melee damage undead berserker; kill second or Shackle/Trap",
-        },
-        ["Deep Widow"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 2,
-            note = "Large venomous spider in King's Alley packs; kill before smaller Spiders",
-        },
-        ["Broodwidow"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 2,
-            note = "Large venomous spider in King's Alley; focus first or Hibernate",
-        },
-        ["Venom Lurker"] = {
-            mark = 7, creatureType = "Beast", dangerLevel = 2,
-            note = "Stacks poison on tank in King's Alley; kill before Tarantulas/Spiders or Hibernate/Poly",
-        },
-
-        -- Standard Pack Trash (Danger 1)
-        ["Skeletal Soldier"] = {
-            mark = 1, creatureType = "Undead", dangerLevel = 1,
-            note = "Melee skeleton in packs of 3; Shackle Undead / Freezing Trap or cleave",
-        },
-        ["Mangled Cadaver"] = {
-            mark = 1, creatureType = "Undead", dangerLevel = 1,
-            note = "Undead pack melee; Shackle or kill after casters/Ragged Ghouls",
+            note = "In close packs of Ghouls/Ragged Ghouls, kill the Ragged Ghoul first; pull back to avoid chaining the next pack.",
         },
         ["Ghoul"] = {
-            mark = 1, creatureType = "Undead", dangerLevel = 1,
-            note = "Standard ghoul; kill Ragged Ghoul / Plague Ghoul first",
+            mark = 7, creatureType = "Undead", dangerLevel = 2,
+            note = "Ghouls hit hard in closely spaced packs; in mixed Ghoul packs, kill after the Ragged Ghoul and avoid overpulling.",
         },
-        ["Skeleton"] = {
-            mark = 1, creatureType = "Undead", dangerLevel = 1,
-            note = "Market Street skeleton; kill Skeletal Mage first",
-        },
-        ["Ghostly Citizen"] = {
-            mark = 1, creatureType = "Undead", dangerLevel = 1,
-            note = "Spectral undead near passage to The Baron; Shackle or cleave",
-        },
-        ["Tarantula"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "King's Alley spider; Polymorph, Hibernate, or Freezing Trap",
-        },
-        ["Spider"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "Standard King's Alley spider; CC or cleave after Deep Widow/Venom Lurker",
-        },
-
-        -- Swarm / Non-Elite Adds (Skip marking)
-        ["Broodling"] = "SKIP",
-        ["Mindless Undead"] = "SKIP",
-        ["Skeletal Servant"] = "SKIP",
-
-        -- Bosses
         ["Witherfang"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 2, ccImmune = true,
-            note = "Boss 1: Patrols King's Alley with Broodlings; cleanse Leech Poison on tank",
+            mark = 8, dangerLevel = 2,
+            note = "Boss patrols King's Alley; clear its route and pull in a safe spot. Leech Poison is applied to the tank.",
         },
         ["The Baron"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Boss 2: Abomination with Knockout (5s stun + threat drop); keep tank topped",
-        },
-        ["The Butcher"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Boss 2 (client name): Abomination with heavy melee & threat-drop stun",
+            mark = 8, dangerLevel = 3,
+            note = "Hard melee swings. Knockout deals heavy damage, knocks back, and stuns the tank; keep the tank near full health and use stuns when available.",
         },
         ["Viktor the Vile"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2, ccImmune = true,
-            note = "Fireplace Wave Boss: Spawns after 3 undead waves in ruined house; cleanse Leech Poison",
+            mark = 8, dangerLevel = 2,
+            note = "Optional chimney event after five add waves; conserve resources between waves and establish tank threat when Viktor appears.",
         },
         ["The Abandoned"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Statue Wave Boss: Stun/interrupt Drain Life immediately; watches Frost Nova + Chill",
+            mark = 8, dangerLevel = 2,
+            note = "Market Square wave event; interrupt or stun the Life Drain cast. Clear each wave before the boss appears.",
         },
         ["Bjork"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2, ccImmune = true,
-            note = "Boss 5: Giant undead troll; position back against wall for Knockback, wait out Anti-Magic Shield",
+            mark = 8, dangerLevel = 2,
+            note = "Patrols through the central area; nearby Ghouls are dangerous, so clear or pull with care.",
         },
         ["Rath'mael"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Final Boss: MUST interrupt/stun Flamestrike and move out of ground fire; heavy melee AoE aura",
+            mark = 8, dangerLevel = 2,
+            note = "Interrupt/stun Flamestrike or move out of it; clear nearby trash before engaging.",
         },
-        ["Lordaeron Captain"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 2, ccImmune = true,
-            note = "Rare Boss (West wing): Long patrol route; pull away from surrounding packs",
-        },
+        ["Shrieking Banshee"] = { note = "Current guides identify this as a Kings Alley patrol but do not establish a special kill order; watch its route and pull packs back." },
+        ["Skeletal Soldier"] = { note = "Appears in groups guarding The Baron; the guide reports tank damage but no special ability-based kill order." },
+        ["Skeletal Mage"] = { note = "Appears in groups guarding The Baron; no spell-specific priority is confirmed in current guides." },
     },
 
-    -- ========================================================================
-    -- 3. EXCAVATION SITE: WETLANDS (Levels 24-29, Above Whelgar's Excavation)
-    -- Unlocked Oct 1 in Beta Phase 2 (Level 30 cap). Lost Marsh, Stalker's
-    -- Thicket, Lost Dig Site, and Site of the Guardian.
-    -- ========================================================================
+    -- Excavation Site: current guide-supported bosses and add mechanics only.
+    -- Context-dependent add tactics are note-only; no unverified encounter rows.
     ["Excavation Site: Wetlands"] = {
-        -- High & Critical Priority Trash
-        ["Thicket Matriarch"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 3,
-            note = "Alpha raptor in Stalker's Thicket packs; focus down first or Hibernate/Polymorph",
-        },
-        ["Highland Creeper"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2,
-            note = "Lost Marsh bog beast elemental; Banish (Warlock) or focus down first",
-        },
-        ["Highland Lurker"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 2,
-            note = "Level 28-29 elite ambusher; watch for stealthed/flanking pulls",
-        },
-        ["Thicket Hunter"] = {
-            mark = 7, creatureType = "Beast", dangerLevel = 2,
-            note = "Stalker's Thicket pack raptor; kill second or Polymorph/Hibernate/Trap",
-        },
-        ["Errant Construct"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Rogue Titan construct in Site of the Guardian; pull singles & focus down",
-        },
-        ["Ancient Construct"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Titan vault construct; immune to Polymorph/Sap",
-        },
-        ["Guardian Construct"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Site of the Guardian construct; heavy physical damage",
-        },
-
-        -- Standard Beast Trash (Great CC targets for Mage/Druid/Hunter)
-        ["Thicket Lurker"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "Stealthing thicket raptor; Polymorph, Hibernate, or Freezing Trap",
-        },
-        ["Highland Spider"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "Excavation spider; immobilizing webs/poison — CC or cleave",
-        },
-        ["Highland Crocolisk"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "Lost Marsh crocolisk; Polymorph, Hibernate, or Trap",
-        },
-        ["Lost Marsh Crocolisk"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "Lost Marsh crocolisk; Polymorph, Hibernate, or Trap",
-        },
-        ["Highland Tortoise"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "High-armor marsh turtle; kill casters/raptors first",
-        },
-
-        -- Bosses
+        ["Thicket Hunter"] = { note = "Shadetooth's two adds apply Infected Wound. CC both, or control one and kill the other first; if the group has no reliable CC, kill the Hunters before focusing Shadetooth and dispel the wound quickly." },
+        ["Thicket Matriarch"] = { note = "Calls Thicket Lurkers when low. Current guides recommend killing the other pack mobs first, then bursting the Matriarch." },
+        ["Thicket Lurker"] = { note = "Stepping through tall grass can spawn Lurkers; stay on the path and fight in cleared ground." },
         ["Saltspine"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 2, ccImmune = true,
-            note = "Boss 1: Ancient white crocolisk in Lost Marsh; clear surrounding water packs first",
+            mark = 8, dangerLevel = 2,
+            note = "Boss patrols the marsh; clear only the route needed and pull to a safe area. Keep ranged players outside its close-range Dust Storm.",
         },
         ["Shadetooth"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 2, ccImmune = true,
-            note = "Boss 2: Violet alpha raptor in Stalker's Thicket; watch for flanking raptor adds",
-        },
-        ["Highland Horror"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Boss 3: Mire-lord bog monstrosity (drops Horrible Rootcore); heavy nature/physical hits",
+            mark = 8, dangerLevel = 3,
+            note = "Boss with two Thicket Hunters. CC both or kill an add first if no reliable CC; dispel Infected Wound and fight in cleared ground so fear does not send players into tall grass.",
         },
         ["Relic Guardian"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Final Boss: Ancient Titan custodian in Site of the Guardian; watch knockback/slam",
-        },
-        ["Brogdul"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Rare encounter in Excavation Site",
+            mark = 8, dangerLevel = 2,
+            note = "Mechanical boss susceptible to most crowd control; use CC to reduce pressure. Stay out of its close-range attacks/knockbacks.",
         },
     },
 
-    -- ========================================================================
-    -- 4. CITY OF DALARAN (Levels 28-33, Alterac Mountains / Lordamere Lake)
-    -- Underbelly, Dalaran Streets, Fel Grove, and Violet Citadel.
-    -- ========================================================================
+    -- Krol'dok Stronghold (40-45), Alcaz Prison (48-53), Blackmaw Hold (55-60)
+    -- and Shaper's Terrace (58-60) have NO mob data to work from. Every source
+    -- checked lists them as "Bosses: Unknown yet / Mob Packs: Unknown yet", and
+    -- none is playable in the beta. Their zone aliases are registered below so
+    -- the addon still resolves the zone name, and the runtime heuristics
+    -- (caster / mana / boss detection) plus auto-learn cover them in the
+    -- meantime. Inventing mob names from the dungeon theme is exactly what the
+    -- data policy at the top of this file forbids, so no rows are added.
+    -- City of Dalaran (28-33, Alterac Mountains). NOT playable in the beta as
+    -- of the October 2026 builds; the boss roster is the beta client's own list
+    -- and the mechanics are the ones Wowhead documents for the encounters.
+    -- Almost all trash here is immune to Arcane damage, so marks matter more
+    -- than the usual caster-first assumption.
     ["City of Dalaran"] = {
-        -- Critical Priority Trash (Danger 3)
         ["Kirin Tor Necromancer"] = {
             mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Underbelly ritualist: continuously raises skeletons! Kill/interrupt first (use Tome of Dalaran on circle)",
+            note = "Summoner. Runs the Underbelly ritual and skeletons keep rising through it; kill it first or the pack never shrinks.",
+        },
+        ["Mana Phantom"] = {
+            mark = 8, creatureType = "Elemental", dangerLevel = 3,
+            note = "Casts Mana Burn; interrupt it. Two of them spawn with Arcanic Enigma.",
+        },
+        ["Angry Tome"] = {
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Spawns out of the buildings during Unstable Sentinel. Kill the Tomes before you engage the boss, not during it.",
         },
         ["Arcanic Enigma"] = {
             mark = 8, creatureType = "Elemental", dangerLevel = 3,
-            note = "Path of Renewal elite: casts 10s Silence and summons Arcane Manalings! Focus/Banish immediately",
+            note = "Brings two Mana Phantoms and a Silence the healer must stay clear of; dispel Manamorph. Wowhead lists it as an encounter, the beta client's boss list does not.",
         },
-
-        -- High Priority Trash & Adds (Danger 2)
-        ["Kirin Tor Mage"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Spellcaster at city gates & streets; interrupt & kill first or Polymorph/Sap",
-        },
-        ["Corrupted Kirin Tor Mage"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Hostile Dalaran caster; interrupt & focus down",
-        },
-        ["Angry Tome"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2,
-            note = "Animated spellbook add with Unstable Sentinel; burn down quickly",
-        },
-        ["Suffused Treant"] = {
-            mark = 4, creatureType = "Demon", dangerLevel = 2,
-            note = "Fel-infused treant in Fel Grove/streets; Warlock Banish (Triangle) or focus kill",
-        },
-        ["Arcane Golem"] = {
-            mark = 7, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Malfunctioning Kirin Tor construct at gates/streets; kill Kirin Tor Mages first",
-        },
-        ["Dalaran Arcane Golem"] = {
-            mark = 7, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Haywire arcane sentinel; heavy melee damage",
-        },
-
-        -- Swarm / Ritual Adds (Skip marking)
-        ["Arcane Manaling"] = "SKIP",
-        ["Risen Skeleton"] = "SKIP",
-        ["Underbelly Skeleton"] = "SKIP",
-
-        -- All 9 Client Boss Encounters
         ["Atrexis the Grave Knight"] = {
-            mark = 7, creatureType = "Humanoid", dangerLevel = 2, ccImmune = true,
-            note = "Underbelly Boss: Disarms tank; kill surrounding Kirin Tor Necromancers (Skull) FIRST",
-        },
-        ["Arcane Anomaly"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Terrace Boss: Pull out of bubble; casts Arcane Bolt & Focal Blast beam",
-        },
-        ["Fel Ancient"] = {
-            mark = 8, creatureType = "Demon", dangerLevel = 2, ccImmune = true,
-            note = "Fel Grove Boss: Clear or Banish nearby Suffused Treants before engaging",
-        },
-        ["Unstable Sentinel"] = {
-            mark = 7, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Magus Commerce Exchange Boss: Kill Angry Tome adds (Skull); run >25 yds out on Malfunction cast",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Disarms the tank and summons skeletons. Establish threat before anyone AoEs. Sits at the Underbelly ritual circle with Necromancers around him.",
         },
         ["Shade of the Archmage"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Final Boss (Purple Parlor): Don't line up on Bounding Mana target; Mass Polymorphs party; do not leave room",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Mass Polymorph, Evocation, Arcane Explosion and Bounding Mana. Assign strict interrupts and keep a Polymorph break ready.",
         },
-        ["Mana Wraith"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2,
-            note = "Street Elite / Boss encounter: Drains mana; focus down",
+        ["Arcane Anomaly"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Arcane Bolt plus Focal Blast, a rotating beam that kills. Stay on the platform and move with the beam.",
+        },
+        ["Unstable Sentinel"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Malfunction blasts everyone within 25 yards after a wind-up. Melee run out on the wind-up, ranged stay at maximum range.",
         },
         ["Mana Devourer"] = {
-            mark = 8, creatureType = "Demon", dangerLevel = 2, ccImmune = true,
-            note = "Demon Boss: Consumes mana & arcane energy",
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Mana drain; kill it while the healers still have a pool to work from.",
+        },
+        ["Mana Wraith"] = {
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Listed as the final encounter in the beta client; a level 27 Mana Wraith has also been pulled as ordinary street trash, so confirm which one you are marking.",
         },
         ["Mana Elemental"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Elemental Boss: Casts AoE Slow reducing movement & attack speed",
+            mark = 7, creatureType = "Elemental", dangerLevel = 2,
+            note = "Arcane-immune elemental; physical and non-Arcane damage only.",
+        },
+        ["Fel Ancient"] = {
+            mark = 7, creatureType = "Demon", dangerLevel = 2,
+            note = "Locked behind a mana barrier until the nearby bosses are down; Warlock Banish applies if the group needs to park it.",
         },
         ["Lyn the Ignored"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2, ccImmune = true,
-            note = "Rare Elite Boss: Tracked by City of Dalaran completion achievement",
+            mark = 7, creatureType = "Humanoid", dangerLevel = 2,
+            note = "Rare elite. No mechanics published yet.",
         },
+        ["Saturated Remnant"] = "SKIP",
     },
 
-    -- ========================================================================
-    -- 5. THE DROWNED CITY (Levels 35-40, Gillijim's Isle, Stranglethorn Vale)
-    -- Sunken jungle troll city risen from the sea; Naga, Undead & Makrura.
-    -- ========================================================================
+    -- The Drowned City (35-40, off the Stranglethorn coast). Not in the beta;
+    -- this comes from the playable BlizzCon 2026 show-floor build, so treat it
+    -- as a build snapshot rather than final data. The boss roster itself is
+    -- still disputed between sources.
     ["The Drowned City"] = {
-        -- Critical Priority Healers & Casters (Danger 3)
-        ["Brinescale Priestess"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Naga healer/caster in tight packs — MUST interrupt heals & kill first (or Polymorph/Sap)",
-        },
         ["Deathless Sorcerer"] = {
             mark = 8, creatureType = "Undead", dangerLevel = 3,
-            note = "Undead troll caster in deep halls — heavy spell damage; interrupt & kill first or Shackle",
-        },
-
-        -- High Priority Trash (Danger 2)
-        ["Saltseer Manhunter"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Troll specialist (drops Voodoo-Infused Artifact); focus down or CC",
-        },
-        ["Brinescale Explorer"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Naga pack combatant; Polymorph/Sap while burning Brinescale Priestess",
-        },
-        ["Risen Sentry"] = {
-            mark = 1, creatureType = "Undead", dangerLevel = 2,
-            note = "Patrolling undead troll sentry — pull back before engaging pack, or Shackle Undead",
+            note = "Caster trash in the deeper sections; interrupt or CC it before anything else in the pack.",
         },
         ["Deathless Guardian"] = {
+            mark = 8, creatureType = "Undead", dangerLevel = 2,
+            note = "Undead group deeper in the city. The reason not to combine packs here.",
+        },
+        ["Risen Sentry"] = {
             mark = 7, creatureType = "Undead", dangerLevel = 2,
-            note = "Heavy-hitting undead troll guard; kill Deathless Sorcerer first, or Shackle Undead",
+            note = "Undead patrol. Watch its route before committing to a pull; Shackle Undead applies.",
         },
-        ["Goaz Warder"] = {
+        ["Brinescale Explorer"] = {
+            mark = 7, creatureType = "Humanoid", dangerLevel = 2,
+            note = "Naga in the mixed aquatic packs; kill the spellcasters first.",
+        },
+        ["Makrura"] = {
             mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Temple warder; CC or kill second",
+            note = "Early-area aquatic packs around the water-heavy rooms; druid Hibernate applies.",
         },
-        ["Primeval Elemental"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2,
-            note = "Elemental add with Deathless Marrow; Banish (Triangle) or burn down first",
-        },
-
-        -- Standard Aquatic / Jungle Trash (Danger 1)
-        ["Makrura Snapper"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Entrance Makrura melee; armor-piercing pinch — CC or cleave",
-        },
-        ["Saltscale Muckdweller"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Murloc pack mob; watch for low-HP flee into extra packs",
-        },
-        ["Chasm Crawler"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "Deep-sea crab beast; Polymorph, Hibernate, or Trap",
-        },
-
-        -- All 7 Boss Encounters
         ["Zul'Alai"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Boss 1: Undead troll berserker; save defensive CDs for dangerous low-HP Enrage & AoE",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "First boss. Very strong enrage near death plus hard AoE hits; save tank defensives and DPS cooldowns for the last phase.",
         },
         ["Zin'aka"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 3, ccImmune = true,
-            note = "Water Boss: Extreme tank damage; pre-heal tank through burst windows",
-        },
-        ["Var'Taka"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2, ccImmune = true,
-            note = "Troll Boss encounter in The Drowned City",
-        },
-        ["Captain Dreadrise"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 2, ccImmune = true,
-            note = "Shipwreck Boss: Undead/pirate captain in the sunken hull section",
+            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
+            note = "Reachable through the water. Reported to put extreme pressure on the tank; enter with defensives ready. Not on every published roster.",
         },
         ["Deathless Marrow"] = {
-            mark = 7, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Boss: Pulled with Primeval Elemental (Skull/Banish); intense tank damage",
-        },
-        ["Gill"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Elemental Boss encounter in The Drowned City",
+            mark = 8, creatureType = "Undead", dangerLevel = 3,
+            note = "Reported to put severe pressure on the tank. Clear nearby enemies first and arrive with healer mana.",
         },
         ["Min'loth the Serpent"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Final Boss: Troll witch doctor / serpent priest; interrupt casts & clear adds",
+            mark = 8, creatureType = "Beast", dangerLevel = 2,
+            note = "Deeper encounter. No ability list, phases or named spells published; treat any detailed strategy as unconfirmed.",
         },
-    },
-
-    -- ========================================================================
-    -- 6. KROL'DOK STRONGHOLD (Levels 40-45, Riverglades)
-    -- Ogre & Twilight's Hammer stronghold in the new Riverglades zone.
-    -- ========================================================================
-    ["Krol'dok Stronghold"] = {
-        ["Krol'dok Ogre Mage"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Ogre spellcaster/Bloodlust buffer; interrupt & kill first or Polymorph/Sap",
-        },
-        ["Krol'dok Shaman"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Healer/totem caller; top interrupt & Skull priority",
-        },
-        ["Krol'dok Warlock"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Shadow/fire caster & demon summoner; focus first",
-        },
-        ["Krol'dok Brute"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Heavy melee ogre; Polymorph, Sap, or Freezing Trap",
-        },
-        ["Krol'dok Enforcer"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Cleaving melee ogre; CC or kill after casters",
-        },
-        ["Krol'dok Mauler"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Melee ogre; good CC candidate",
-        },
-        ["Twilight Darkcaster"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Cultist shadow caster; interrupt & focus first",
-        },
-        ["Twilight Ritualist"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Cultist healer/summoner; top kill priority",
-        },
-    },
-
-    -- ========================================================================
-    -- 7. ALCAZ PRISON (Levels 48-53, Alcaz Island, Dustwallow Marsh)
-    -- Island prison fortress holding Defias insurgents & Naga invaders.
-    -- ========================================================================
-    ["Alcaz Prison"] = {
-        ["Wrathscale Siren"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Naga healer/frost caster; interrupt heals & kill first",
-        },
-        ["Strashaz Siren"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Elite Naga caster/healer on Alcaz; top kill or Polymorph priority",
-        },
-        ["Strashaz Sorceress"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Elite Naga spellcaster; interrupt & burn first",
-        },
-        ["Wrathscale Myrmidon"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Heavy melee Naga; Polymorph/Sap/Trap while killing Siren",
-        },
-        ["Strashaz Myrmidon"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Elite Naga warrior; CC or kill after casters",
-        },
-        ["Strashaz Serpent Guard"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Elite Naga guard; disarm/CC or secondary kill",
-        },
-        ["Defias Blood Wizard"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Prison caster; high burst magic damage — focus first",
-        },
-        ["Defias Warder"] = {
+        ["Var'Taka"] = {
             mark = 8, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Prison guard with net/crowd control; focus or Sap",
+            note = "On one published roster but not the other; no mechanics documented either way.",
         },
-        ["Defias Insurgent"] = {
-            mark = 3, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Prison rioter; Sap, Polymorph, or cleave",
-        },
-    },
-
-    -- ========================================================================
-    -- 8. BLACKMAW HOLD (Levels 55-60, North Azshara Timbermaw Gates)
-    -- Great Furbolg city behind the giant gates in northern Azshara.
-    -- ========================================================================
-    ["Blackmaw Hold"] = {
-        ["Blackmaw Shaman"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Furbolg healer & totem caller; MUST interrupt Healing Wave & kill first",
-        },
-        ["Blackmaw Mystic"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3,
-            note = "Furbolg healer/curser; top kill or Polymorph priority",
-        },
-        ["Blackmaw Ursolite"] = {
+        ["Captain Dreadrise"] = {
             mark = 8, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Furbolg caster; interrupt & focus before melee warriors",
+            note = "Pirate encounter on one published roster; a ship has crashed into the city. No mechanics documented.",
         },
-        ["Blackmaw Totemic"] = {
+        ["Gill"] = {
             mark = 8, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Drops dangerous totems; destroy totems & focus down",
-        },
-        ["Blackmaw Warrior"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 1,
-            note = "Melee furbolg; Polymorph, Sap, or Freezing Trap",
-        },
-        ["Blackmaw Den Watcher"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Patrolling furbolg guard; pull back or CC",
-        },
-        ["Blackmaw Pathfinder"] = {
-            mark = 5, creatureType = "Humanoid", dangerLevel = 2,
-            note = "Ranged furbolg hunter; LoS pull or Polymorph",
+            note = "On one published roster but not the other; no mechanics documented.",
         },
     },
 
-    -- ========================================================================
-    -- 9. SHAPER'S TERRACE (Levels 58-60, Un'Goro Crater)
-    -- Endgame Titan research facility in Un'Goro Crater.
-    -- ========================================================================
-    ["Shaper's Terrace"] = {
-        ["Titan Custodian"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "High-level Titan keeper; heavy AoE/construct abilities — focus first",
-        },
-        ["Shaper's Construct"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Titan stone/arcane construct; immune to humanoid CC",
-        },
-        ["Arcane Watcher"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 2, ccImmune = true,
-            note = "Arcane sentry construct; interrupt beams & focus",
-        },
-        ["Crystal Elemental"] = {
-            mark = 4, creatureType = "Elemental", dangerLevel = 2,
-            note = "Un'Goro pylon elemental; Warlock Banish (Triangle) or focus kill",
-        },
-        ["Pterrordax Screamer"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 3,
-            note = "Psychic scream / AoE fear beast; kill or Hibernate/Polymorph immediately",
-        },
-        ["Primal Devilsaur"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 2, ccImmune = true,
-            note = "Massive melee damage & Terrifying Roar; tank with defensive CDs",
-        },
-        ["Un'Goro Ravager"] = {
-            mark = 5, creatureType = "Beast", dangerLevel = 1,
-            note = "Pack dinosaur; Polymorph, Hibernate, or Freezing Trap",
-        },
-    },
-
-    -- ========================================================================
-    -- WOW FOREVER RAIDS (Level 60)
-    -- 10-Player Raid: Barrow Deeps (8 Bosses)
-    -- 20-Player Raid: Hyjal Summit (13 Bosses)
-    -- ========================================================================
+    -- New raids. Both open December 9 2026 and neither is playable in the beta.
+    -- Names are the beta client's Legacy achievement criteria (Hyjal Summit) and
+    -- the BlizzCon demo roster (Barrow Deeps); no mechanics have been tested, so
+    -- these rows only carry the boss mark.
     ["Barrow Deeps"] = {
-        ["Deepscar Matriarch"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Raid Boss 1",
-        },
-        ["Elder Tangleclaw"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Raid Boss 2 (Corrupted Furbolg/Ancient)",
-        },
-        ["Khalith the Dreadspinner"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Raid Boss 3 (Giant Spider encounter)",
-        },
-        ["Well of Sorrow"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Raid Boss 4",
-        },
-        ["Amethrax"] = {
-            mark = 8, creatureType = "Dragonkin", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Raid Boss 5",
-        },
-        ["Del'lynar Songwood"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Raid Boss 6",
-        },
-        ["Ravus"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Dual Boss (Ravus and Darlissa) — Primary Kill",
-        },
-        ["Darlissa"] = {
-            mark = 7, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Dual Boss (Ravus and Darlissa) — Secondary Kill / Off-tank",
-        },
-        ["Sonya Darkhallow"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Barrow Deeps Final Raid Boss",
-        },
+        ["Deepscar Matriarch"]     = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Elder Tangleclaw"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Khalith the Dreadspinner"] = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Well of Sorrow"]         = { mark = 8, dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Amethrax"]               = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Del'lynar Songwood"]     = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
+        ["Ravus"]                  = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; paired with Darlissa. Mechanics untested." },
+        ["Darlissa"]               = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; paired with Ravus. Mechanics untested." },
+        ["Sonya Darkhallow"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Demo roster name; mechanics untested." },
     },
 
     ["Hyjal Summit"] = {
-        ["Bandalar"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit 20-Player Raid Boss",
-        },
-        ["Ancient of Decay"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss (Corrupted Ancient)",
-        },
-        ["Time-Lost Battalion"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss (Battalion encounter)",
-        },
-        ["Sylvestris Dusksong"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss",
-        },
-        ["Old Gloomlurker"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss",
-        },
-        ["Gharalis the Abyssal"] = {
-            mark = 8, creatureType = "Demon", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss (Abyssal Demon)",
-        },
-        ["Kathris the Haunted"] = {
-            mark = 8, creatureType = "Undead", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss",
-        },
-        ["Anara Chillwind"] = {
-            mark = 8, creatureType = "Elemental", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss",
-        },
-        ["Elder Minderel"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss",
-        },
-        ["Tracker Stillwind"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss",
-        },
-        ["Council of Thorns"] = {
-            mark = 8, creatureType = "Humanoid", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss (Council encounter)",
-        },
-        ["Nythus the Dreambound"] = {
-            mark = 8, creatureType = "Dragonkin", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Raid Boss (Emerald Dream Dragon)",
-        },
-        ["The Wild King"] = {
-            mark = 8, creatureType = "Beast", dangerLevel = 3, ccImmune = true,
-            note = "Hyjal Summit Final Raid Boss",
-        },
+        ["Bandalar"]               = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order, which is not a confirmed kill order; mechanics untested." },
+        ["Ancient of Decay"]       = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Time-Lost Battalion"]    = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Sylvestris Dusksong"]    = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Old Gloomlurker"]        = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Gharalis the Abyssal"]   = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Kathris the Haunted"]    = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Anara Chillwind"]        = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Elder Minderel"]         = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Tracker Stillwind"]      = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Council of Thorns"]      = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
+        ["Nythus the Dreambound"]  = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; one source spells this Dreadmbound. Mechanics untested." },
+        ["The Wild King"]          = { mark = 8, dangerLevel = 2, note = "From the beta client's Legacy achievement order; mechanics untested." },
     },
+
 }
 
--- Merge into master mob table
+-- Merge without replacing any pre-existing zone or mob entry.
 PsychoMarksYou_DefaultMobs = PsychoMarksYou_DefaultMobs or {}
 for zone, mobs in pairs(foreverMobs) do
-    PsychoMarksYou_DefaultMobs[zone] = mobs
+    local runtimeZone = PsychoMarksYou_DefaultMobs[zone]
+    if not runtimeZone then
+        runtimeZone = {}
+        PsychoMarksYou_DefaultMobs[zone] = runtimeZone
+    end
+    for mobName, entry in pairs(mobs) do
+        if runtimeZone[mobName] == nil then
+            runtimeZone[mobName] = entry
+        end
+    end
 end
 
 -- ============================================================================
 -- WOW FOREVER ZONE ALIASES
--- Covers all client/subzone spelling variants so GetRealZoneText() always
--- resolves to the canonical DB key in PsychoMarksYou_DefaultMobs.
+-- Canonicalizes known Forever dungeon/subzone names. A mapped zone does not
+-- imply mob-priority rows exist for that content.
 -- ============================================================================
 local foreverAliases = {
     -- 1. The Hall of Thanes

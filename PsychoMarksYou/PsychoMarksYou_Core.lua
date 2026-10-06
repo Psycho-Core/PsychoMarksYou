@@ -633,11 +633,14 @@ function PMY.GetMobDBEntry(mobName)
     end
 
     if PsychoMarksYou_DefaultMobs and zone and PsychoMarksYou_DefaultMobs[zone] then
-        local entry = PsychoMarksYou_DefaultMobs[zone][mobName]
-        if entry ~= nil then
-            return entry
-        end
+        -- A known instance zone is authoritative; never borrow a same-name row
+        -- from a different expansion/instance.
+        return PsychoMarksYou_DefaultMobs[zone][mobName]
     end
+
+    -- If zone resolution failed while inside an instance, a global scan could
+    -- apply an unrelated Classic/Forever entry with the same creature name.
+    if PMY.inInstance then return nil end
 
     if PsychoMarksYou_DefaultMobs then
         for _, zoneMobs in pairs(PsychoMarksYou_DefaultMobs) do
@@ -707,6 +710,8 @@ function PMY.UpdateTooltipWithMobInfo()
         local role = PMY.MARK_ROLES[mark] or ""
         local immStr = ccImmune and " |cFFFF6600(CC Immune)|r" or ""
         GameTooltip:AddLine("|cFFFF3366Psycho Mark's You:|r " .. PMY.GetIconText(mark) .. " |cFFCCCCCC(" .. role .. ")|r" .. dangerText .. immStr)
+    elseif mark == nil and note then
+        GameTooltip:AddLine("|cFFFF3366Psycho Mark's You:|r |cFFCCCCCCTactical note|r")
     end
 
     if note then

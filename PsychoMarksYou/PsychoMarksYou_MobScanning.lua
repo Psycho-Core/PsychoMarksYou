@@ -395,6 +395,24 @@ function PMY.MarkSingleUnit(unit)
     return false
 end
 
+-- Score ties are common: ScoreMob only separates the Skull/Cross band from the
+-- CC band, so every danger-3 kill priority in a pack lands on the same number.
+-- table.sort is not stable, so without an explicit tie-break the "first target"
+-- the addon announces would be arbitrary run to run. Break ties by the database
+-- mark preference (Skull over Cross over a CC mark), then by name so the order
+-- is fully reproducible.
+function PMY.SortByPriority(a, b)
+    if a.score ~= b.score then
+        return a.score > b.score
+    end
+    local pa = (type(a.dbPriority) == "number") and a.dbPriority or 0
+    local pb = (type(b.dbPriority) == "number") and b.dbPriority or 0
+    if pa ~= pb then
+        return pa > pb
+    end
+    return (a.name or "") < (b.name or "")
+end
+
 function PMY.ScanAndMarkPack(triggerUnit)
     if not PMY.ShouldMark() then return end
 
@@ -454,7 +472,7 @@ function PMY.ScanAndMarkPack(triggerUnit)
         end
     end
 
-    table.sort(candidates, function(a, b) return a.score > b.score end)
+    table.sort(candidates, PMY.SortByPriority)
 
     local newMarks = {}
     for _, mob in ipairs(candidates) do

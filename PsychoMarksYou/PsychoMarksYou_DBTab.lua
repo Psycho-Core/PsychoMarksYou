@@ -15,7 +15,7 @@ function PMY.BuildDatabaseTab(tab3)
     dbDesc:SetPoint("TOPLEFT", 12, -8)
     dbDesc:SetPoint("RIGHT", tab3, "RIGHT", -12, 0)
     dbDesc:SetJustifyH("LEFT")
-    dbDesc:SetText("|cFFFF3366WoW Forever Dungeon & Raid Database:|r Click a zone on the left to view/edit mobs. Hover a mob for tactical notes, or click its mark/danger badge to cycle.")
+    dbDesc:SetText("|cFFFF3366Target Priority Database:|r Edit default marks, CC roles, danger, and tactical notes. Note-only entries have no default priority.")
 
     local addZoneLabel = tab3:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     addZoneLabel:SetPoint("TOPLEFT", 12, -28)
@@ -152,7 +152,7 @@ function PMY.BuildDatabaseTab(tab3)
 
     local hdrSource = mobHeader:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hdrSource:SetPoint("RIGHT", -155, 0)
-    hdrSource:SetText("|cFFFFCC00Type|r")
+    hdrSource:SetText("|cFFFFCC00Type/Info|r")
 
     local hdrDanger = mobHeader:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
     hdrDanger:SetPoint("RIGHT", -115, 0)
@@ -416,7 +416,10 @@ function PMY.BuildDatabaseTab(tab3)
                 local danger    = PMY.GetEntryDangerLevel(activeRaw) or PMY.GetEntryDangerLevel(defRaw)
                 local note      = PMY.GetEntryNote(activeRaw) or PMY.GetEntryNote(defRaw)
                 local isCustom  = (cusRaw ~= nil and defRaw == nil)
-                local isMod     = (cusRaw ~= nil and defRaw ~= nil and (cusVal ~= defVal or PMY.GetEntryDangerLevel(cusRaw) ~= PMY.GetEntryDangerLevel(defRaw)))
+                local isMod     = (cusRaw ~= nil and defRaw ~= nil and (
+                    cusVal ~= defVal
+                    or PMY.GetEntryDangerLevel(cusRaw) ~= PMY.GetEntryDangerLevel(defRaw)
+                ))
 
                 local passFilter = true
                 if showModOnly and not (isCustom or isMod) then
@@ -551,6 +554,8 @@ function PMY.BuildDatabaseTab(tab3)
                 row.sourceText:SetText("|cFF00FF88" .. (ctypeShort ~= "" and ctypeShort or "Custom") .. "|r" .. immFlag)
             elseif entry.isModified then
                 row.sourceText:SetText("|cFFFFAA00" .. (ctypeShort ~= "" and ctypeShort or "Edited") .. "|r" .. immFlag)
+            elseif entry.mark == nil and entry.note then
+                row.sourceText:SetText("|cFF777777Note|r")
             else
                 row.sourceText:SetText("|cFF777777" .. (ctypeShort ~= "" and ctypeShort or "Default") .. "|r" .. immFlag)
             end
