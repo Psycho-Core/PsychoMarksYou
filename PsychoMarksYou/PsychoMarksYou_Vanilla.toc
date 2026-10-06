@@ -1,0 +1,22 @@
+## Interface: 11508
+## Title: |cFFFF3366Psycho Mark's|r |cFFFFFFFFYou|r
+## Notes: Automatic whole-group dungeon & raid mob marker for WoW Forever Beta and Classic Era. Assigns kill priorities and group-aware CC marks.
+## Author: Psycho (based on AutoMarkAssist by Swatto)
+## Version: 1.1.0-ForeverBeta
+## X-Category: Combat
+## SavedVariables: PsychoMarksYouDB
+
+PsychoMarksYou_DB_Classic.lua
+PsychoMarksYou_DB_Forever.lua
+PsychoMarksYou.lua
+PsychoMarksYou_Core.lua
+PsychoMarksYou_MobScanning.lua
+PsychoMarksYou_Proximity.lua
+PsychoMarksYou_Mouseover.lua
+PsychoMarksYou_Manual.lua
+PsychoMarksYou_MarkKey.lua
+PsychoMarksYou_Minimap.lua
+PsychoMarksYou_DBTab.lua
+PsychoMarksYou_Tutorial.lua
+PsychoMarksYou_Config.lua
+PsychoMarksYou_Events.lua

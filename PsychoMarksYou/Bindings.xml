@@ -1,0 +1,6 @@
+<Bindings>
+	<Binding name="CLICK PMY_MarkMobButton:LeftButton" category="Psycho Mark's You">
+	</Binding>
+	<Binding name="CLICK PMY_ResetMarksButton:LeftButton" category="Psycho Mark's You">
+	</Binding>
+</Bindings>
