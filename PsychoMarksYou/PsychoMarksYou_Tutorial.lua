@@ -87,7 +87,7 @@ function PMY.BuildTutorialTab(tab4)
     AddParagraph(
         "|cFFFF3366Psycho Mark's You|r is built specifically for the |cFFFFCC00World of Warcraft: Forever Beta|r (Patch 1.60.1). " ..
         "Unlike stock AutoMarkAssist (which only marked one mob at a time when you hovered it), |cFFFF3366Psycho Mark's You|r " ..
-        "automatically scans |cFF00FF00every visible enemy nameplate in the pack|r, scores the entire group against the Forever database " ..
+        "automatically scans |cFF00FF00every visible enemy nameplate in the pack|r, scores the entire group against the mob-priority database " ..
         "and your party's CC classes, and marks |cFFFFFFFFthe whole group of mobs simultaneously|r!"
     )
 
@@ -104,7 +104,7 @@ function PMY.BuildTutorialTab(tab4)
     AddBullet("Mark Whole Group Keybind",
         "You can also bind a dedicated |cFF00FF00Mark Whole Group|r key in the |cFFFFCC00General|r tab. Pressing it marks the entire visible pack at once without needing to hover or target any mob.")
     AddBullet("On-Screen Pack Preview HUD Banner",
-        "Displays a draggable banner when an unmarked pack is detected showing the exact marks planned for the pack (e.g. |cFFFFFFFFSkull: Dark Iron Summoner • Cross: Magmatus • Moon: Dark Iron Engineer|r).")
+        "Displays a draggable banner when an unmarked pack is detected showing the exact marks planned for the pack (e.g. |cFFFFFFFFSkull: Dark Iron Summoner • Cross: Dark Iron Looter|r).")
 
     AddHeader("2. Raid Icon Priority & Party CC System")
     AddIconRow(8, "First Kill",         "Primary focus target — healers, summoners, AoE fears, and silences.")
@@ -116,22 +116,19 @@ function PMY.BuildTutorialTab(tab4)
     AddIconRow(2, "Hibernate",          "Druid Hibernate (Beast, Dragonkin).")
     AddIconRow(6, "Freezing Trap",      "Hunter Freezing Trap (Humanoid, Beast, Demon, Dragonkin, Giant, Undead).")
 
-    AddHeader("3. New WoW Forever Dungeons — Priority Cheat Sheet")
+    AddHeader("3. Researched WoW Forever Priorities")
 
-    AddBullet("The Hall of Thanes (Lvl 13-18, Beneath Ironforge)",
-        "\n  • |cFFFFFFFFSkull (Kill 1st):|r |cFFFF5555Dark Iron Summoner|r (Fireball + summons Fiery Assistant; MUST kill before |cFFFFCC00Magmatus|r!), |cFFFF5555Dark Iron Shadowcaster|r (Terrify AoE Fear!), |cFFFF5555Lesser Stone Golem|r (burn both golems first on |cFFFFCC00Durgen Dirgehammer|r!), |cFFFF5555Enraged Apparition|r.\n  • |cFF8888FFMoon / Diamond (CC):|r |cFFFFCC00Dark Iron Engineer|r (AoE dynamite), |cFFFFCC00Dark Iron Enforcer|r (5s stun), |cFFFFCC00Dark Iron Looter|r.\n  • |cFF888888SKIP:|r |cFFAAAAAABloodhound Runt|r (cleave down).")
+    AddBullet("The Hall of Thanes (Beta-tested)",
+        "\n  • |cFFFFFFFFSkull:|r |cFFFF5555Dark Iron Summoner|r — interrupt/stun its Fireballs and summons; prioritize it before Magmatus. |cFFFF5555Durgen Dirgehammer|r is a dangerous boss; clear nearby Looters/patrols and handle the Lesser Stone Golems after Durgen.\n  • |cFFFF0000Cross:|r |cFFFFCC00Magmatus|r after the Summoner; |cFFFFCC00Dark Iron Looter|r / |cFFFFCC00Fiery Assistant|r may use the second focus mark as the pack calls for it. Looters hit quickly; Assistants are summoned by Summoners.\n  • |cFFFFCC66Dark Iron Engineer:|r bombs can be avoided by moving; its entry has a note, not a fixed priority.")
 
-    AddBullet("Ruins of Lordaeron (Lvl 15-20, Tirisfal Glades)",
-        "\n  • |cFFFFFFFFSkull (Kill 1st):|r |cFFFF5555Shrieking Banshee|r (AoE Silence), |cFFFF5555Flesh Golem|r & |cFFFF5555Living Monstrosity|r (heavy melee + Knock Away threat drop), |cFFFF5555Skeletal Mage|r, |cFFFF5555Ragged Ghoul|r (always kill before regular Ghouls), |cFFFF5555Plague Ghoul|r, |cFFFF5555Deep Widow|r / |cFFFF5555Broodwidow|r.\n  • |cFFFF0000Cross (Kill 2nd):|r |cFFFFCC00Stone Watcher|r (uses Stone Slumber physical immunity — finish with spells), |cFFFFCC00Venom Lurker|r, |cFFFFCC00Fallen Berserker|r.\n  • |cFFFFFF00Star / Moon (CC):|r |cFFFFCC00Skeletal Soldier|r, |cFFFFCC00Ghoul|r, |cFFFFCC00Tarantula|r, |cFFFFCC00Spider|r.\n  • |cFF888888SKIP:|r |cFFAAAAAABroodling|r, |cFFAAAAAAMindless Undead|r, |cFFAAAAAASkeletal Servant|r.")
+    AddBullet("Ruins of Lordaeron (Beta-tested)",
+        "\n  • |cFFFFFFFFSkull:|r |cFFFF5555Flesh Golem|r / |cFFFF5555Living Monstrosity|r when pulled alone; kill |cFFFF5555Ragged Ghoul|r before regular |cFFFFCC00Ghouls|r in mixed packs. Pull back to avoid nearby packs.\n  • Boss notes cover Witherfang's tank poison, The Baron's heavy Knockout/stun, The Abandoned's interruptible Life Drain, Bjork's patrol/nearby-pull risk, and Rath'mael's Flamestrike.\n  • Banshees and skeletal packs are situational; their note-only entries do not set a universal mark.")
 
-    AddBullet("Excavation Site: Wetlands (Lvl 24-29, Above Whelgar's Excavation)",
-        "\n  • |cFFFFFFFFSkull (Kill 1st):|r |cFFFF5555Thicket Matriarch|r (alpha pack raptor), |cFFFF5555Highland Creeper|r (bog elemental — or Warlock Banish), |cFFFF5555Highland Lurker|r (lvl 28-29 elite), |cFFFF5555Errant Construct|r (Titan construct, CC immune).\n  • |cFFFF0000Cross (Kill 2nd):|r |cFFFFCC00Thicket Hunter|r.\n  • |cFF8888FFMoon / Circle / Square (Beast CC):|r |cFFFFCC00Thicket Lurker|r, |cFFFFCC00Highland Spider|r, |cFFFFCC00Highland Crocolisk|r, |cFFFFCC00Highland Tortoise|r.")
+    AddBullet("Excavation Site: Wetlands (Beta-tested)",
+        "\n  • Boss targets: |cFFFFFFFFSaltspine|r, |cFFFFFFFFShadetooth|r, and |cFFFFFFFFRelic Guardian|r. Move out of Saltspine's close-range Dust Storm; control Shadetooth's Thicket Hunters or kill them one at a time and dispel Infected Wound.\n  • Thicket Hunter, Matriarch, and Lurker entries are note-only because their handling depends on CC, pack composition, and positioning. Stay on paths: crossing tall grass can spawn Lurkers.")
 
-    AddBullet("City of Dalaran (Lvl 28-33, Alterac Mountains)",
-        "\n  • |cFFFFFFFFSkull (Kill 1st):|r |cFFFF5555Kirin Tor Necromancer|r (continuously raises skeletons in Underbelly ritual — kill before |cFFFFCC00Atrexis the Grave Knight|r!), |cFFFF5555Arcanic Enigma|r (10s Silence + summons Arcane Manalings), |cFFFF5555Kirin Tor Mage|r, |cFFFF5555Angry Tome|r (adds on |cFFFFCC00Unstable Sentinel|r).\n  • |cFF00FF00Triangle (Banish):|r |cFFFFCC00Suffused Treant|r (Demon treants around |cFFFFCC00Fel Ancient|r).\n  • |cFFFF0000Cross (Kill 2nd):|r |cFFFFCC00Arcane Golem|r (CC immune).\n  • |cFF888888SKIP:|r |cFFAAAAAArcane Manaling|r, |cFFAAAAAARisen Skeleton|r.")
-
-    AddBullet("The Drowned City (Lvl 35-40, Stranglethorn Vale)",
-        "\n  • |cFFFFFFFFSkull (Kill 1st):|r |cFFFF5555Brinescale Priestess|r (Naga healer — interrupt & kill first!), |cFFFF5555Deathless Sorcerer|r (undead troll caster), |cFFFF5555Saltseer Manhunter|r, |cFFFF5555Primeval Elemental|r (or Banish on |cFFFFCC00Deathless Marrow|r).\n  • |cFFFFFF00Star (Shackle Undead):|r |cFFFFCC00Risen Sentry|r (patrol), |cFFFFCC00Deathless Guardian|r.\n  • |cFF8888FFMoon / Diamond (CC):|r |cFFFFCC00Brinescale Explorer|r, |cFFFFCC00Goaz Warder|r, |cFFFFCC00Makrura Snapper|r, |cFFFFCC00Saltscale Muckdweller|r.")
+    AddBullet("Research coverage and gaps",
+        "\n  • Automatic mob-priority rows are currently limited to the three beta-tested dungeons above. City of Dalaran remains outside the latest reviewed public-beta roster; its pre-beta run and guide-reported mob tactics are not verified in the current build, so no rows are encoded. The Drowned City material is show-floor preview coverage; four other announced dungeons and Barrow Deeps/Hyjal Summit have no playable tactics. No priority is inferred from themes or client rosters. See docs/target-priority-research.md in the repository for sources and limitations.")
 
     AddHeader("4. Slash Commands")
     AddBullet("/pmy",             "Open/close the Psycho Mark's You settings & database window")

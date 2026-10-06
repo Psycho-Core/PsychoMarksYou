@@ -1,7 +1,8 @@
 -- AutoMarkAssist_DB_Classic.lua
 -- Mob mark-preference database for Classic (Vanilla) dungeons and raids.
--- This is the FIRST DB module loaded -- it creates the global tables.
--- Subsequent expansion modules merge into these tables.
+-- This is the first DB module loaded. It defines the legacy Classic table and
+-- merges its entries into the runtime lookup without clobbering existing rows.
+-- Subsequent expansion modules merge into the runtime table.
 --
 -- NOTE: Mob names reflect post-Cataclysm revamps where applicable.
 -- Classic Era and TBC/WotLK Classic servers may use original pre-Cata names
@@ -14,6 +15,8 @@
 --   1-7      -> Any specific mark preference
 --   "SKIP"   -> Never mark this mob.
 --
+-- Context-dependent tactics may be note-only. Such rows have no default mark,
+-- creature type, CC flag, or danger level and cannot alter automatic scoring.
 -- Adjust via the in-game Database tab or by editing this file directly.
 
 -- Creates the global database tables that subsequent expansion modules merge into.
@@ -66,11 +69,11 @@ AutoMarkAssist_MobDB = {
 
     ["Shadowfang Keep"] = {
         ["Tormented Officer"]           = { mark = 8, creatureType = "Undead" },
-        ["Wailing Guardsman"]           = { mark = 8, creatureType = "Undead", dangerLevel = 2 },  -- fear
+        ["Wailing Guardsman"]           = { mark = 8, creatureType = "Undead", dangerLevel = 3, note = "Casts a 5-second AoE silence (not a fear); kill or control before it silences the healer and casters." },
         ["Unstable Ravager"]            = { mark = 8, creatureType = "Beast" },
         ["Shadowfang Darksoul"]         = { mark = 8, creatureType = "Humanoid" },
         ["Shadowfang Glutton"]          = { mark = 5, creatureType = "Humanoid" },
-        ["Shadowfang Moonwalker"]       = { mark = 5, creatureType = "Humanoid" },
+        ["Shadowfang Moonwalker"]       = { note = "Uses a temporary anti-magic shield; switch to melee damage or wait out the immunity." },
         ["Shadowfang Ragetooth"]        = { mark = 5, creatureType = "Humanoid" },
         ["Shadowfang Whitescalp"]       = { mark = 5, creatureType = "Humanoid" },
         ["Shadowfang Wolfguard"]        = { mark = 5, creatureType = "Humanoid" },
@@ -80,7 +83,7 @@ AutoMarkAssist_MobDB = {
         ["Slavering Worg"]              = { mark = 5, creatureType = "Beast" },
         ["Lupine Horror"]               = { mark = 8, creatureType = "Beast" },
         ["Lupine Delusion"]             = { mark = 5, creatureType = "Beast" },
-        ["Fel Steed"]                   = { mark = 5, creatureType = "Demon" },
+        ["Fel Steed"]                   = { note = "Hits hard but can be skipped; avoid an unnecessary pull." },
         ["Vile Bat"]                    = { mark = 5, creatureType = "Beast" },
     },
 
@@ -151,6 +154,7 @@ AutoMarkAssist_MobDB = {
     },
 
     ["Razorfen Downs"] = {
+        ["Ragglesnout"]                = { mark = 8, creatureType = "Humanoid", dangerLevel = 3, note = "Rare priest-type mob can Dominate Mind and heal; interrupt the heal and control the mind-control cast." },
         ["Death's Head Necromancer"]    = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },  -- raises undead
         ["Death's Head Sage"]           = { mark = 8, creatureType = "Humanoid", dangerLevel = 2 },
         ["Death's Head Priest"]         = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },
@@ -305,15 +309,15 @@ AutoMarkAssist_MobDB = {
     },
 
     ["Scholomance"] = {
-        ["Scholomance Acolyte"]         = { mark = 8, creatureType = "Humanoid" },
-        ["Scholomance Necrolyte"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },
+        ["Scholomance Acolyte"]         = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Caster packs are dangerous; pull one group at a time back toward the entrance to avoid chain pulls." },
+        ["Scholomance Necrolyte"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 3, note = "High-risk caster; isolate its pack and interrupt dangerous casts." },
         ["Scholomance Neophyte"]        = { mark = 5, creatureType = "Humanoid" },
-        ["Scholomance Student"]         = { mark = 5, creatureType = "Humanoid" },
-        ["Scholomance Adept"]           = { mark = 8, creatureType = "Humanoid" },
+        ["Scholomance Student"]         = { note = "Viewing-room elite students are commonly skipped unless needed for a quest." },
+        ["Scholomance Adept"]           = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Caster-pack target; use careful single-pack pulls and interrupt casts where possible." },
         ["Scholomance Dark Summoner"]   = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },
-        ["Scholomance Occultist"]       = { mark = 8, creatureType = "Humanoid" },
+        ["Scholomance Occultist"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Caster-pack target; avoid chaining nearby pulls." },
         ["Boneweaver"]                  = { mark = 8, creatureType = "Undead" },
-        ["Candlestick Mage"]            = { mark = 8, creatureType = "Humanoid" },
+        ["Candlestick Mage"]            = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Caster; pull carefully with nearby Scholomance packs." },
         ["Reanimated Corpse"]           = "SKIP",
         ["Risen Construct"]             = { mark = 5, creatureType = "Undead" },
         ["Risen Abomination"]           = { mark = 5, creatureType = "Undead" },
@@ -322,6 +326,7 @@ AutoMarkAssist_MobDB = {
         ["Unstable Corpse"]             = { mark = 5, creatureType = "Undead" },
         ["Wailing Death"]               = { mark = 8, creatureType = "Undead", dangerLevel = 2 },
         ["Diseased Ghoul"]              = { mark = 5, creatureType = "Undead" },
+        ["Rattlegore"]                  = { mark = 8, creatureType = "Undead", dangerLevel = 2, note = "The nearby trash hits hard and can stun tanks; pull the room slowly and separately." },
     },
 
     ["The Temple of Atal'Hakkar"] = {
@@ -468,25 +473,25 @@ AutoMarkAssist_MobDB = {
     -- ============================================================
 
     ["Molten Core"] = {
-        ["Firelord"]                    = { mark = 8, creatureType = "Elemental", dangerLevel = 2 },  -- summons Sons of Flame
+        ["Firelord"]                    = { mark = 8, creatureType = "Elemental", dangerLevel = 2, note = "Kill the Lava Spawn adds as they appear; these are not Ragnaros' Sons of Flame." },
         ["Flamewaker"]                  = { mark = 5, creatureType = "Elemental" },
-        ["Flamewaker Elite"]            = { mark = 5, creatureType = "Elemental" },
+        ["Flamewaker Elite"]            = { note = "Majordomo pack: keep the elites controlled/tanked separately and follow the raid-assigned add order." },
         ["Flamewaker Healer"]           = { mark = 8, creatureType = "Elemental", dangerLevel = 3 },
         ["Flamewaker Priest"]           = { mark = 8, creatureType = "Elemental", dangerLevel = 3 },
         ["Flamewaker Protector"]        = { mark = 5, creatureType = "Elemental" },
-        ["Firesworn"]                   = { mark = 8, creatureType = "Elemental", dangerLevel = 2 },  -- explodes on death
-        ["Son of Flame"]                = { mark = 8, creatureType = "Elemental" },
+        ["Firesworn"]                   = { note = "Explodes on death; spread and handle one at a time. Its relative kill order depends on the raid plan, so no fixed mark is enforced." },
+        ["Son of Flame"]                = { mark = 8, creatureType = "Elemental", dangerLevel = 3, note = "Ragnaros phase add; control and burn promptly according to the raid assignment." },
         ["Ancient Core Hound"]          = { mark = 5, creatureType = "Beast" },
         ["Core Hound"]                  = { mark = 5, creatureType = "Beast" },
-        ["Lava Elemental"]              = { mark = 5, creatureType = "Elemental" },
-        ["Lava Surger"]                 = { mark = 5, creatureType = "Elemental" },
-        ["Lava Annihilator"]            = { mark = 8, creatureType = "Elemental" },
-        ["Lava Reaver"]                 = { mark = 5, creatureType = "Elemental" },
+        ["Lava Elemental"]              = { mark = 4, creatureType = "Elemental", dangerLevel = 2, note = "Elemental trash can be banished or stunned; coordinate control with the tank." },
+        ["Lava Surger"]                 = { mark = 4, creatureType = "Elemental", dangerLevel = 2, note = "Knockback hazard; fight away from ledges and use Banish/other control if assigned." },
+        ["Lava Annihilator"]            = { note = "Handle as a separate tanked elemental; exact focus order is pack-dependent." },
+        ["Lava Reaver"]                 = { mark = 4, creatureType = "Elemental", dangerLevel = 2, note = "May be banished/controlled; follow the tank and raid assignment." },
         ["Primal Flame Elemental"]      = { mark = 5, creatureType = "Elemental" },
-        ["Molten Giant"]                = { mark = 5, creatureType = "Giant" },
-        ["Molten Destroyer"]            = { mark = 5, creatureType = "Giant" },
+        ["Molten Giant"]                = { note = "Stuns and heavy melee make separate tanking important; giants are handled one at a time, not by a universal kill order." },
+        ["Molten Destroyer"]            = { note = "Stuns and heavy melee make separate tanking important; giants are handled one at a time, not by a universal kill order." },
         ["Flame Imp"]                   = "SKIP",
-        ["Lava Spawn"]                  = "SKIP",
+        ["Lava Spawn"]                  = { mark = 8, creatureType = "Elemental", dangerLevel = 3, note = "Firelord adds; switch to and kill these promptly as they spawn." },
     },
 
     ["Onyxia's Lair"] = {
@@ -497,21 +502,21 @@ AutoMarkAssist_MobDB = {
 
     ["Blackwing Lair"] = {
         ["Grethok the Controller"]     = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },
-        ["Blackwing Mage"]              = { mark = 8, creatureType = "Humanoid", dangerLevel = 2 },
-        ["Blackwing Spellbinder"]       = { mark = 8, creatureType = "Humanoid" },
+        ["Blackwing Mage"]              = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Caster priority on later mixed pulls; kill casters while tanks hold the dangerous dragonkin separately." },
+        ["Blackwing Spellbinder"]       = { mark = 8, creatureType = "Humanoid", dangerLevel = 2, note = "Caster priority on later mixed pulls; keep the tanked dragonkin controlled separately." },
         ["Blackwing Taskmaster"]        = { mark = 5, creatureType = "Humanoid" },
-        ["Blackwing Warlock"]           = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },
+        ["Blackwing Warlock"]           = { mark = 8, creatureType = "Humanoid", dangerLevel = 3, note = "Focus dangerous caster adds while tanks hold Overseers/Wyrmguards separately." },
         ["Blackwing Guardsman"]         = { mark = 5, creatureType = "Humanoid" },
         ["Blackwing Legionnaire"]       = { mark = 5, creatureType = "Humanoid" },
-        ["Blackwing Technician"]        = { mark = 5, creatureType = "Humanoid" },
+        ["Blackwing Technician"]        = { mark = "SKIP", creatureType = "Humanoid", note = "Hunter kites these bomb-throwers; the raid ignores them while killing the other adds. Do not focus-mark." },
         ["Death Talon Captain"]         = { mark = 8, creatureType = "Dragonkin" },
         ["Death Talon Flamescale"]      = { mark = 5, creatureType = "Dragonkin" },
         ["Death Talon Hatcher"]         = { mark = 8, creatureType = "Dragonkin", dangerLevel = 3 },
-        ["Death Talon Overseer"]        = { mark = 5, creatureType = "Dragonkin" },
+        ["Death Talon Overseer"]        = { note = "Very dangerous; tank separately and space from Wyrmguards while the raid kills casters. The encounter plan, not a fixed mark, controls its order." },
         ["Death Talon Seether"]         = { mark = 5, creatureType = "Dragonkin" },
         ["Death Talon Dragonspawn"]     = { mark = 5, creatureType = "Dragonkin" },
         ["Death Talon Wyrmkin"]         = { mark = 5, creatureType = "Dragonkin" },
-        ["Death Talon Wyrmguard"]       = { mark = 5, creatureType = "Dragonkin" },
+        ["Death Talon Wyrmguard"]       = { note = "Very dangerous; tank separately and space from Overseers while the raid kills casters. The encounter plan, not a fixed mark, controls its order." },
         ["Master Elemental Shaper Krixix"] = { mark = 8, creatureType = "Humanoid" },
         ["Enraged Felguard"]            = { mark = 5, creatureType = "Demon" },
         ["Black Whelp"]                 = "SKIP",
@@ -593,28 +598,29 @@ AutoMarkAssist_MobDB = {
     },
 
     ["Temple of Ahn'Qiraj"] = {
-        ["Anubisath Defender"]          = { mark = 8, creatureType = "Humanoid" },
-        ["Anubisath Sentinel"]          = { mark = 8, creatureType = "Humanoid" },
+        ["Anubisath Defender"]          = { note = "Handle Meteor, Plague, and Explode by their mechanics; defenders must be cleared before Twin Emperors, but no universal pack kill order is safe." },
+        ["Anubisath Sentinel"]          = { note = "Ability rolls differ: kill the Sentinel with the least dangerous ability first because survivors heal and inherit the dead Sentinel's ability." },
         ["Eye Tentacle"]                = { mark = 8, creatureType = "Aberration", ccImmune = true },
         ["Giant Eye Tentacle"]          = { mark = 8, creatureType = "Aberration", ccImmune = true },
         ["Giant Claw Tentacle"]         = { mark = 8, creatureType = "Aberration", ccImmune = true },
         ["Qiraji Scarab"]               = { mark = 5, creatureType = "Beast" },
-        ["Obsidian Eradicator"]         = { mark = 8, creatureType = "Humanoid" },
+        ["Obsidian Eradicator"]         = { note = "Pull/tank separately and interrupt or control its dangerous casts; exact order depends on the pack and raid plan." },
         ["Obsidian Nullifier"]          = { mark = 8, creatureType = "Humanoid", dangerLevel = 2 },
-        ["Qiraji Brainwasher"]          = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },  -- mind control
-        ["Qiraji Mindslayer"]           = { mark = 8, creatureType = "Humanoid", dangerLevel = 3 },
-        ["Qiraji Champion"]             = { mark = 5, creatureType = "Humanoid" },
-        ["Qiraji Slayer"]               = { mark = 5, creatureType = "Humanoid" },
+        ["Qiraji Brainwasher"]          = { mark = 8, creatureType = "Humanoid", dangerLevel = 3, note = "Mind Control and feared Mind Flay make this the first kill in packs with Vekniss Warriors." },
+        ["Qiraji Mindslayer"]           = { mark = 8, creatureType = "Humanoid", dangerLevel = 3, note = "In the pre-C'Thun Mindslayer packs, focus Mindslayers before Champions and Slayers." },
+        ["Qiraji Champion"]             = { mark = 7, creatureType = "Humanoid", dangerLevel = 2, note = "Pre-C'Thun pack order: after Mindslayers and before Slayers." },
+        ["Qiraji Slayer"]               = { note = "Pre-C'Thun three-target order places Slayers after Mindslayers and Champions; the addon has no third dedicated kill-order icon, so this remains informational." },
         ["Qiraji Swarmguard"]           = { mark = 5, creatureType = "Humanoid" },
+        ["Qiraji Lasher"]              = { mark = 8, creatureType = "Humanoid", dangerLevel = 3, note = "Whirlwind/knockback hazard; pull packs back. In Vekniss Wasp packs, usually kill the Lasher first." },
         ["Spawn of Fankriss"]           = { mark = 8, creatureType = "Beast" },
         ["Vekniss Drone"]               = { mark = 5, creatureType = "Beast" },
         ["Vekniss Guardian"]            = { mark = 5, creatureType = "Beast" },
         ["Vekniss Hive Crawler"]        = { mark = 5, creatureType = "Beast" },
         ["Vekniss Soldier"]             = { mark = 5, creatureType = "Beast" },
-        ["Vekniss Stinger"]             = { mark = 8, creatureType = "Beast" },
-        ["Vekniss Warrior"]             = { mark = 5, creatureType = "Beast" },
-        ["Vekniss Borer"]               = { mark = 5, creatureType = "Beast" },
-        ["Vekniss Wasp"]                = { mark = 5, creatureType = "Beast" },
+        ["Vekniss Stinger"]             = { note = "In Vekniss Wasp packs, usually last after the Qiraji Lasher and Wasps; adjust to the actual pack. No third dedicated kill-order icon is assigned." },
+        ["Vekniss Warrior"]             = { mark = 7, creatureType = "Beast", dangerLevel = 2, note = "Kill after the Brainwasher in paired packs; each Warrior death spawns a large group of Vekniss Borers." },
+        ["Vekniss Borer"]               = { mark = 8, creatureType = "Beast", dangerLevel = 2, note = "Borers spawn in a large group when a Vekniss Warrior dies; switch/AoE them before they overwhelm the raid." },
+        ["Vekniss Wasp"]                = { mark = 7, creatureType = "Beast", dangerLevel = 2, note = "In Wasp packs, the usual order is Qiraji Lasher, Wasps, then Stinger." },
         ["Beetle"]                      = "SKIP",
         ["Dark Blue Qiraji Battle Tank"]  = "SKIP",
         ["Gilded Scarab"]               = "SKIP",
@@ -628,6 +634,8 @@ AutoMarkAssist_MobDB = {
 
     ["Naxxramas"] = {
         ["Bile Retcher"]                = { mark = 8, creatureType = "Undead" },
+        ["Soldier of the Frozen Wastes"] = { mark = 8, creatureType = "Undead", dangerLevel = 3, note = "Kel'Thuzad phase-one ranged priority: kill before it reaches anyone and triggers raid-wide Dark Blast." },
+        ["Unstoppable Abomination"]     = { note = "Kel'Thuzad phase-one melee add; tank/manage its healing-reduction debuff. Assignment and wave position matter more than a universal kill order." },
         ["Deathknight Captain"]         = { mark = 8, creatureType = "Undead" },
         ["Deathknight Cavalier"]        = { mark = 8, creatureType = "Undead" },
         ["Eye Stalk"]                   = { mark = 8, creatureType = "Aberration", ccImmune = true },
@@ -642,17 +650,18 @@ AutoMarkAssist_MobDB = {
         ["Necropolis Acolyte"]          = { mark = 8, creatureType = "Humanoid" },
         ["Shade of Naxxramas"]          = { mark = 8, creatureType = "Undead" },
         ["Skeletal Smith"]              = { mark = 8, creatureType = "Undead" },
-        ["Soul Weaver"]                 = { mark = 8, creatureType = "Undead" },
-        ["Spectral Deathknight"]        = { mark = 8, creatureType = "Undead" },
-        ["Spectral Horseman"]           = { mark = 8, creatureType = "Undead" },
-        ["Spectral Rider"]              = { mark = 8, creatureType = "Undead" },
+        ["Soul Weaver"]                 = { mark = 7, creatureType = "Undead", dangerLevel = 3, note = "Kel'Thuzad phase-one wave add; ranged players kill it and Soldiers before they reach the raid." },
+        ["Spectral Deathknight"]        = { note = "Gothik dead-side wave: use the side-specific kill/CC order; it differs from the living side." },
+        ["Spectral Horseman"]           = { note = "Gothik dead-side wave: horsemen are handled after the other assigned adds; follow the side-specific plan." },
+        ["Spectral Rider"]              = { note = "Gothik dead-side wave: follow the side-specific kill order; live-side Riders are a higher priority." },
+        ["Spectral Trainee"]            = { note = "Gothik dead-side wave: follow the side-specific order; do not apply the living-side priority here." },
         ["Spirit of Naxxramas"]         = { mark = 8, creatureType = "Undead" },
         ["Stoneskin Gargoyle"]          = { mark = 8, creatureType = "Undead" },
         ["Surgical Assistant"]          = { mark = 8, creatureType = "Undead" },
         ["Unholy Staff"]                = { mark = 8, creatureType = "Undead" },
-        ["Unrelenting Deathknight"]     = { mark = 8, creatureType = "Undead" },
-        ["Unrelenting Rider"]           = { mark = 8, creatureType = "Undead" },
-        ["Unrelenting Trainee"]         = { mark = 5, creatureType = "Undead" },
+        ["Unrelenting Deathknight"]     = { note = "Gothik living-side Death Knights can be Shackled; wave-side and raid composition determine whether to CC or kill." },
+        ["Unrelenting Rider"]           = { note = "Gothik living-side Riders are a high priority; the dead-side order differs, so no global fixed mark is enforced." },
+        ["Unrelenting Trainee"]         = { note = "Gothik living-side Trainees are lowest priority; the dead-side order starts differently. Follow the wave/side plan." },
         ["Carrion Spinner"]             = { mark = 5, creatureType = "Beast" },
         ["Dread Creeper"]               = { mark = 5, creatureType = "Beast" },
         ["Frenzied Bat"]                = { mark = 5, creatureType = "Beast" },
@@ -671,6 +680,22 @@ AutoMarkAssist_MobDB = {
         ["Web Wrap"]                    = "SKIP",
     },
 }
+
+-- Merge Classic data into the runtime lookup without replacing any entries
+-- supplied by an earlier module. Keep AutoMarkAssist_MobDB as a compatibility alias.
+PsychoMarksYou_DefaultMobs = PsychoMarksYou_DefaultMobs or {}
+for zone, mobs in pairs(AutoMarkAssist_MobDB) do
+    local runtimeZone = PsychoMarksYou_DefaultMobs[zone]
+    if not runtimeZone then
+        runtimeZone = {}
+        PsychoMarksYou_DefaultMobs[zone] = runtimeZone
+    end
+    for mobName, entry in pairs(mobs) do
+        if runtimeZone[mobName] == nil then
+            runtimeZone[mobName] = entry
+        end
+    end
+end
 
 -- ============================================================
 -- ZONE ALIASES
